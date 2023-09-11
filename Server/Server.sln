@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33723.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameServer", "GameServer\GameServer.vcxproj", "{70929B5A-8472-4469-B6AF-73C768D2C5E1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ServerCore", "ServerCore\ServerCore.vcxproj", "{84A46697-4060-43F2-83E1-B2B6392C95AB}"
+EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "PacketGenerator", "Tools\PacketGenerator\PacketGenerator.pyproj", "{BF9E235A-98D3-42D7-8157-470F38C77111}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{549ABB83-53D0-4309-8E87-3A55247070F5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Debug|Any CPU.Build.0 = Debug|x64
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Debug|x64.ActiveCfg = Debug|x64
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Debug|x64.Build.0 = Debug|x64
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Release|Any CPU.ActiveCfg = Release|x64
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Release|Any CPU.Build.0 = Release|x64
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Release|x64.ActiveCfg = Release|x64
+		{70929B5A-8472-4469-B6AF-73C768D2C5E1}.Release|x64.Build.0 = Release|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Debug|Any CPU.Build.0 = Debug|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Debug|x64.ActiveCfg = Debug|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Debug|x64.Build.0 = Debug|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Release|Any CPU.ActiveCfg = Release|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Release|Any CPU.Build.0 = Release|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Release|x64.ActiveCfg = Release|x64
+		{84A46697-4060-43F2-83E1-B2B6392C95AB}.Release|x64.Build.0 = Release|x64
+		{BF9E235A-98D3-42D7-8157-470F38C77111}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BF9E235A-98D3-42D7-8157-470F38C77111}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BF9E235A-98D3-42D7-8157-470F38C77111}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BF9E235A-98D3-42D7-8157-470F38C77111}.Release|x64.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BF9E235A-98D3-42D7-8157-470F38C77111} = {549ABB83-53D0-4309-8E87-3A55247070F5}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {812870F7-F2E2-4143-896F-5ECDB90B1CCA}
+	EndGlobalSection
+EndGlobal
