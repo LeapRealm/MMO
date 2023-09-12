@@ -49,15 +49,15 @@ int main()
 
 	while (true)
 	{
-		this_thread::sleep_for(1s);
-
 		Protocol::S_CHAT pkt;
 		pkt.set_msg("Hello, Client");
 		SendBufferRef SendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-		service->Broadcast(SendBuffer);
+
+		GSessionManager.Broadcast(SendBuffer);
+		this_thread::sleep_for(1s);
 	}
 
-	DoWorkerJob(service);
+	//DoWorkerJob(service);
 
 	GThreadManager->Join();
 }
