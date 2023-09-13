@@ -50,7 +50,7 @@ int main()
 	while (true)
 	{
 		Protocol::S_CHAT pkt;
-		pkt.set_msg("Hello, Client");
+		pkt.set_msg("Hello, Client, I'm Server");
 		SendBufferRef SendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
 
 		GSessionManager.Broadcast(SendBuffer);

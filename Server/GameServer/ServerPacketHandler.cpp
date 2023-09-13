@@ -12,12 +12,7 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	return false;
 }
 
-bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
-{
-	return true;
-}
-
-bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt)
+bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
 {
 	return true;
 }

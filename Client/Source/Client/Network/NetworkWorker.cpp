@@ -15,11 +15,12 @@ RecvWorker::RecvWorker(FSocket* Socket, TSharedPtr<PacketSession> Session)
 
 RecvWorker::~RecvWorker()
 {
-	LOG_SCREEN(TEXT("Recv Thread Init"));
+	
 }
 
 bool RecvWorker::Init()
 {
+	LOG_SCREEN(TEXT("Recv Thread Init"));
 	return true;
 }
 

@@ -3,7 +3,22 @@ package Protocol;
 
 import "Enum.proto";
 
-message Player
+message PlayerInfo
 {
-	uint64 playerId = 1;
+	uint64 playerID = 1;
+	string name = 2;
+	Vector positon = 3;
+}
+
+message Transform
+{
+	Vector positon = 1;
+	float rotationYaw = 2;
+}
+
+message Vector
+{
+	float x = 1;
+	float y = 2;
+	float z = 3;
 }
