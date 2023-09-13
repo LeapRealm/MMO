@@ -15,5 +15,5 @@ public:
 	virtual void OnSend(int32 len) override;
 
 public:
-	weak_ptr<class Room> _room;
+	PlayerRef _player;
 };

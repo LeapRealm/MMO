@@ -12,7 +12,7 @@ UCLASS()
 class CLIENT_API UClientGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-
+	
 public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectToGameServer();
@@ -24,7 +24,7 @@ public:
 	void HandleRecvPackets();
 
 	void SendPacket(SendBufferRef SendBuffer);
-
+	
 public:
 	FSocket* Socket;
 	FString IPAddress = TEXT("127.0.0.1");

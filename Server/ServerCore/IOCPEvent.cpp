@@ -1,16 +1,16 @@
 #include "pch.h"
-#include "IocpEvent.h"
+#include "IOCPEvent.h"
 
 /*---------------
-	IocpEvent
+	IOCPEvent
 ---------------*/
 
-IocpEvent::IocpEvent(EventType type) : eventType(type)
+IOCPEvent::IOCPEvent(EventType type) : eventType(type)
 {
 	Init();
 }
 
-void IocpEvent::Init()
+void IOCPEvent::Init()
 {
 	OVERLAPPED::hEvent = 0;
 	OVERLAPPED::Internal = 0;

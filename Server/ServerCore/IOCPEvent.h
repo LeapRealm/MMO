@@ -12,49 +12,49 @@ enum class EventType : uint8
 };
 
 /*---------------
-	IocpEvent
+	IOCPEvent
 ---------------*/
 
-class IocpEvent : public OVERLAPPED
+class IOCPEvent : public OVERLAPPED
 {
 public:
-	IocpEvent(EventType type);
+	IOCPEvent(EventType type);
 
 	void Init();
 
 public:
 	EventType		eventType;
-	IocpObjectRef	owner;
+	IOCPObjectRef	owner;
 };
 
 /*-----------------
 	ConnectEvent
 -----------------*/
 
-class ConnectEvent : public IocpEvent
+class ConnectEvent : public IOCPEvent
 {
 public:
-	ConnectEvent() : IocpEvent(EventType::Connect) { }
+	ConnectEvent() : IOCPEvent(EventType::Connect) { }
 };
 
 /*----------------------
 	DisconnectEvent
 ----------------------*/
 
-class DisconnectEvent : public IocpEvent
+class DisconnectEvent : public IOCPEvent
 {
 public:
-	DisconnectEvent() : IocpEvent(EventType::Disconnect) { }
+	DisconnectEvent() : IOCPEvent(EventType::Disconnect) { }
 };
 
 /*-----------------
 	AcceptEvent
 -----------------*/
 
-class AcceptEvent : public IocpEvent
+class AcceptEvent : public IOCPEvent
 {
 public:
-	AcceptEvent() : IocpEvent(EventType::Accept) { }
+	AcceptEvent() : IOCPEvent(EventType::Accept) { }
 
 public:
 	SessionRef session = nullptr;
@@ -64,20 +64,20 @@ public:
 	RecvEvent
 -----------------*/
 
-class RecvEvent : public IocpEvent
+class RecvEvent : public IOCPEvent
 {
 public:
-	RecvEvent() : IocpEvent(EventType::Recv) { }
+	RecvEvent() : IOCPEvent(EventType::Recv) { }
 };
 
 /*-----------------
 	SendEvent
 -----------------*/
 
-class SendEvent : public IocpEvent
+class SendEvent : public IOCPEvent
 {
 public:
-	SendEvent() : IocpEvent(EventType::Send) { }
+	SendEvent() : IOCPEvent(EventType::Send) { }
 
 	vector<SendBufferRef> sendBuffers;
 };

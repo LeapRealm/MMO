@@ -1,6 +1,7 @@
 #include "ClientGameInstance.h"
 
 #include "Client.h"
+#include "ClientPacketHandler.h"
 #include "PacketSession.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
@@ -35,17 +36,17 @@ void UClientGameInstance::ConnectToGameServer()
 
 void UClientGameInstance::DisconnectFromGameServer()
 {
+	if (GameServerSession)
+	{
+		GameServerSession->Disconnect();
+		GameServerSession = nullptr;
+	}
+
 	if (Socket)
 	{
 		ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
 		SocketSubsystem->DestroySocket(Socket);
 		Socket = nullptr;
-	}
-
-	if (GameServerSession)
-	{
-		GameServerSession->Disconnect();
-		GameServerSession = nullptr;
 	}
 }
 

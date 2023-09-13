@@ -1,6 +1,6 @@
 #pragma once
-#include "IocpCore.h"
-#include "IocpEvent.h"
+#include "IOCPCore.h"
+#include "IOCPEvent.h"
 #include "NetAddress.h"
 #include "RecvBuffer.h"
 
@@ -10,10 +10,10 @@ class Service;
 	Session
 ---------------*/
 
-class Session : public IocpObject
+class Session : public IOCPObject
 {
 	friend class Listener;
-	friend class IocpCore;
+	friend class IOCPCore;
 	friend class Service;
 
 	enum
@@ -42,7 +42,7 @@ public:
 
 private:
 	virtual HANDLE		GetHandle() override;
-	virtual void		Dispatch(class IocpEvent* iocpEvent, int32 numOfBytes = 0) override;
+	virtual void		Dispatch(class IOCPEvent* iocpEvent, int32 numOfBytes = 0) override;
 
 private:
 	bool				RegisterConnect();

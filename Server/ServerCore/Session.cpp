@@ -57,7 +57,7 @@ HANDLE Session::GetHandle()
 	return reinterpret_cast<HANDLE>(_socket);
 }
 
-void Session::Dispatch(IocpEvent* iocpEvent, int32 numOfBytes)
+void Session::Dispatch(IOCPEvent* iocpEvent, int32 numOfBytes)
 {
 	switch (iocpEvent->eventType)
 	{

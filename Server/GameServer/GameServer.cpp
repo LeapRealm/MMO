@@ -8,6 +8,7 @@
 #include "GameSession.h"
 #include "GameSessionManager.h"
 #include "Job.h"
+#include "RoomManager.h"
 
 enum
 {
@@ -29,10 +30,11 @@ void DoWorkerJob(ServerServiceRef& service)
 int main()
 {
 	ServerPacketHandler::Init();
+	GRoomManager.Add();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),
-		make_shared<IocpCore>(),
+		make_shared<IOCPCore>(),
 		[=]() { return make_shared<GameSession>(); },
 		100
 	);
@@ -47,7 +49,7 @@ int main()
 		});
 	}
 
-	while (true)
+	while (false)
 	{
 		Protocol::S_CHAT pkt;
 		pkt.set_msg("Hello, Client, I'm Server");
@@ -57,7 +59,7 @@ int main()
 		this_thread::sleep_for(1s);
 	}
 
-	//DoWorkerJob(service);
+	DoWorkerJob(service);
 
 	GThreadManager->Join();
 }

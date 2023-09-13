@@ -29,6 +29,8 @@ public class Client : ModuleRules
 			"Client/",
 			"Client/Network/",
 			"Client/Network/Protocol/",
+			"Client/Framework/",
+			"Client/Object/",
 		});
 	}
 }

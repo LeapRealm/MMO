@@ -10,17 +10,19 @@ extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 enum : uint16
 {
-	PKT_S_ENTER_GAME = 1000,
-	PKT_S_LEAVE_GAME = 1001,
-	PKT_S_SPAWN = 1002,
-	PKT_S_DESPAWN = 1003,
-	PKT_C_MOVE = 1004,
-	PKT_S_MOVE = 1005,
-	PKT_C_CHAT = 1006,
-	PKT_S_CHAT = 1007,
+	PKT_C_ENTER_GAME = 1000,
+	PKT_S_ENTER_GAME = 1001,
+	PKT_S_LEAVE_GAME = 1002,
+	PKT_S_SPAWN = 1003,
+	PKT_S_DESPAWN = 1004,
+	PKT_C_MOVE = 1005,
+	PKT_S_MOVE = 1006,
+	PKT_C_CHAT = 1007,
+	PKT_S_CHAT = 1008,
 };
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
+bool Handle_C_ENTER_GAME(PacketSessionRef& session, Protocol::C_ENTER_GAME& pkt);
 bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt);
 bool Handle_C_CHAT(PacketSessionRef& session, Protocol::C_CHAT& pkt);
 
@@ -31,6 +33,7 @@ public:
 	{
 		for (int32 i = 0; i < UINT16_MAX; i++)
 			GPacketHandler[i] = Handle_INVALID;
+		GPacketHandler[PKT_C_ENTER_GAME] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_ENTER_GAME>(Handle_C_ENTER_GAME, session, buffer, len); };
 		GPacketHandler[PKT_C_MOVE] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_MOVE>(Handle_C_MOVE, session, buffer, len); };
 		GPacketHandler[PKT_C_CHAT] = [](PacketSessionRef& session, BYTE* buffer, int32 len) { return HandlePacket<Protocol::C_CHAT>(Handle_C_CHAT, session, buffer, len); };
 	}

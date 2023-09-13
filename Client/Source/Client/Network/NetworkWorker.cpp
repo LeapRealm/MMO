@@ -61,9 +61,11 @@ bool RecvWorker::ReceivePacket(TArray<uint8>& OutPacket)
 	}
 
 	OutPacket = HeaderBuffer;
-
-	TArray<uint8> PayloadBuffer;
+	
 	const int32 PayloadSize = Header.PacketSize - HeaderSize;
+	if (PayloadSize <= 0)
+		return true;
+
 	OutPacket.AddZeroed(PayloadSize);
 	
 	if (ReceiveDesiredBytes(&OutPacket[HeaderSize], PayloadSize))

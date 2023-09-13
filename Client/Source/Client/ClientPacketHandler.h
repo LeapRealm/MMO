@@ -10,14 +10,15 @@ extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 enum : uint16
 {
-	PKT_S_ENTER_GAME = 1000,
-	PKT_S_LEAVE_GAME = 1001,
-	PKT_S_SPAWN = 1002,
-	PKT_S_DESPAWN = 1003,
-	PKT_C_MOVE = 1004,
-	PKT_S_MOVE = 1005,
-	PKT_C_CHAT = 1006,
-	PKT_S_CHAT = 1007,
+	PKT_C_ENTER_GAME = 1000,
+	PKT_S_ENTER_GAME = 1001,
+	PKT_S_LEAVE_GAME = 1002,
+	PKT_S_SPAWN = 1003,
+	PKT_S_DESPAWN = 1004,
+	PKT_C_MOVE = 1005,
+	PKT_S_MOVE = 1006,
+	PKT_C_CHAT = 1007,
+	PKT_S_CHAT = 1008,
 };
 
 bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len);
@@ -48,6 +49,7 @@ public:
 		PacketHeader* header = reinterpret_cast<PacketHeader*>(buffer);
 		return GPacketHandler[header->id](session, buffer, len);
 	}
+	static SendBufferRef MakeSendBuffer(Protocol::C_ENTER_GAME& pkt) { return MakeSendBuffer(pkt, PKT_C_ENTER_GAME); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_MOVE& pkt) { return MakeSendBuffer(pkt, PKT_C_MOVE); }
 	static SendBufferRef MakeSendBuffer(Protocol::C_CHAT& pkt) { return MakeSendBuffer(pkt, PKT_C_CHAT); }
 
