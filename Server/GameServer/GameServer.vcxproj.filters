@@ -10,8 +10,11 @@
     <Filter Include="Protocol\Proto">
       <UniqueIdentifier>{424c7cf2-d17c-49a7-ae5a-f940c04a6e25}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{d4b43fc4-2119-4a4b-98fa-ef85fc53b469}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game">
-      <UniqueIdentifier>{6711539e-c13c-4ea2-bb4b-3ed76a49a445}</UniqueIdentifier>
+      <UniqueIdentifier>{81d7e8e9-b1f6-4876-8f2c-15243bb700f0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -39,17 +42,17 @@
     <ClCompile Include="GameSessionManager.cpp">
       <Filter>Main</Filter>
     </ClCompile>
-    <ClCompile Include="RoomManager.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="PlayerManager.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="GameRoom.cpp">
-      <Filter>Game</Filter>
+    <ClCompile Include="Utils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Room.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="ObjectUtils.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,17 +77,17 @@
     <ClInclude Include="GameSession.h">
       <Filter>Main</Filter>
     </ClInclude>
-    <ClInclude Include="RoomManager.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="Utils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerManager.h">
+    <ClInclude Include="Room.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="GameRoom.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="ObjectUtils.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

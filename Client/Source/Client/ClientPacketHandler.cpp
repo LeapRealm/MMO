@@ -1,7 +1,7 @@
 ﻿#include "ClientPacketHandler.h"
 
-#include "ClientGameMode.h"
-#include "Kismet/GameplayStatics.h"
+#include "Client.h"
+#include "ClientGameInstance.h"
 
 PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
@@ -10,43 +10,42 @@ bool Handle_INVALID(PacketSessionRef& session, BYTE* buffer, int32 len)
 	return false;
 }
 
+bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
+{
+	Protocol::C_ENTER_GAME EnterGamePkt;
+	EnterGamePkt.set_playerindex(0);
+	SEND_PACKET(EnterGamePkt);
+	
+	return true;
+}
+
 bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 {
-	UWorld* World = GEngine->GameViewport->GetWorld();
-	AClientGameMode* ClientGameMode = Cast<AClientGameMode>(UGameplayStatics::GetGameMode(World));
-	ClientGameMode->AddPlayer(pkt.playerinfo(), true);
+	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		ClientGameInstance->HandleSpawn(pkt);
 	return true;
 }
 
 bool Handle_S_LEAVE_GAME(PacketSessionRef& session, Protocol::S_LEAVE_GAME& pkt)
 {
-	UWorld* World = GEngine->GameViewport->GetWorld();
-	AClientGameMode* ClientGameMode = Cast<AClientGameMode>(UGameplayStatics::GetGameMode(World));
-	ClientGameMode->RemoveMyPlayer();
+	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+	{
+		// TODO: 게임 종료 or 로비로 이동
+	}
 	return true;
 }
 
 bool Handle_S_SPAWN(PacketSessionRef& session, Protocol::S_SPAWN& pkt)
 {
-	UWorld* World = GEngine->GameViewport->GetWorld();
-	AClientGameMode* ClientGameMode = Cast<AClientGameMode>(UGameplayStatics::GetGameMode(World));
-	
-	for (const Protocol::PlayerInfo& Player : pkt.players())
-	{
-		ClientGameMode->AddPlayer(Player, false);
-	}
+	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		ClientGameInstance->HandleSpawn(pkt);
 	return true;
 }
 
 bool Handle_S_DESPAWN(PacketSessionRef& session, Protocol::S_DESPAWN& pkt)
 {
-	UWorld* World = GEngine->GameViewport->GetWorld();
-	AClientGameMode* ClientGameMode = Cast<AClientGameMode>(UGameplayStatics::GetGameMode(World));
-	
-	for (const uint64 ID : pkt.playerids())
-	{
-		ClientGameMode->RemovePlayer(ID);
-	}
+	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		ClientGameInstance->HandleDespawn(pkt);
 	return true;
 }
 

@@ -4,14 +4,31 @@ package Protocol;
 import "Enum.proto";
 import "Struct.proto";
 
+message C_LOGIN
+{
+
+}
+
+message S_LOGIN
+{
+	bool success = 1;
+	repeated PlayerInfo players = 2;
+}
+
 message C_ENTER_GAME
 {
-	
+	uint64 playerIndex = 1;
 }
 
 message S_ENTER_GAME
 {
-	PlayerInfo playerInfo = 1;
+	bool success = 1;
+	PlayerInfo player = 2;
+}
+
+message C_LEAVE_GAME
+{
+
 }
 
 message S_LEAVE_GAME
@@ -26,18 +43,18 @@ message S_SPAWN
 
 message S_DESPAWN
 {
-	repeated uint64 playerIDs = 1;
+	repeated uint64 objectIDs = 1;
 }
 
 message C_MOVE
 {
-	Vector position = 1;
+	Vector3D position = 1;
 }
 
 message S_MOVE
 {
 	uint64 playerID = 1;
-	Vector position = 2;
+	Vector3D position = 2;
 }
 
 // FOR TEST
@@ -48,6 +65,7 @@ message C_CHAT
 
 message S_CHAT
 {
-	string msg = 1;
+	uint64 playerID = 1;
+	string msg = 2;
 }
 // FOR TEST

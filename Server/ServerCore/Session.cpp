@@ -31,10 +31,10 @@ void Session::Send(SendBufferRef sendBuffer)
 
 		if (_sendRegistered.exchange(true) == false)
 			registerSend = true;
-	}
 
-	if (registerSend)
-		RegisterSend();
+		if (registerSend)
+			RegisterSend();
+	}
 }
 
 bool Session::Connect()
@@ -161,17 +161,13 @@ void Session::RegisterSend()
 	_sendEvent.Init();
 	_sendEvent.owner = shared_from_this();
 
+	int32 writeSize = 0;
+	while (_sendQueue.empty() == false)
 	{
-		WRITE_LOCK;
-
-		int32 writeSize = 0;
-		while (_sendQueue.empty() == false)
-		{
-			SendBufferRef sendBuffer = _sendQueue.front();
-			writeSize += sendBuffer->WriteSize();
-			_sendQueue.pop();
-			_sendEvent.sendBuffers.push_back(sendBuffer);
-		}
+		SendBufferRef sendBuffer = _sendQueue.front();
+		writeSize += sendBuffer->WriteSize();
+		_sendQueue.pop();
+		_sendEvent.sendBuffers.push_back(sendBuffer);
 	}
 
 	vector<WSABUF> wsaBufs;
@@ -185,7 +181,7 @@ void Session::RegisterSend()
 	}
 
 	DWORD numOfBytes = 0;
-	if (SOCKET_ERROR == ::WSASend(_socket, wsaBufs.data(), static_cast<DWORD>(wsaBufs.size()), OUT & numOfBytes, 0, &_sendEvent, nullptr))
+	if (SOCKET_ERROR == ::WSASend(_socket, wsaBufs.data(), wsaBufs.size(), OUT & numOfBytes, 0, &_sendEvent, nullptr))
 	{
 		int32 errorCode = ::WSAGetLastError();
 		if (errorCode != WSA_IO_PENDING)
@@ -256,6 +252,7 @@ void Session::ProcessSend(int32 numOfBytes)
 	OnSend(numOfBytes);
 
 	WRITE_LOCK;
+
 	if (_sendQueue.empty())
 		_sendRegistered.store(false);
 	else

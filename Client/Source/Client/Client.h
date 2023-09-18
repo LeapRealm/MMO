@@ -45,3 +45,7 @@ private:
 USING_SHARED_PTR(Session);
 USING_SHARED_PTR(PacketSession);
 USING_SHARED_PTR(SendBuffer);
+
+#define SEND_PACKET(Pkt)															\
+	SendBufferRef SendBuffer = ClientPacketHandler::MakeSendBuffer(Pkt);			\
+	Cast<UClientGameInstance>(GWorld->GetGameInstance())->SendPacket(SendBuffer);

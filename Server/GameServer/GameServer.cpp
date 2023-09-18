@@ -1,14 +1,9 @@
 #include "pch.h"
 
-#include <tchar.h>
-#include <iostream>
 #include "ThreadManager.h"
 #include "Service.h"
-#include "Session.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
-#include "Job.h"
-#include "RoomManager.h"
 
 enum
 {
@@ -30,7 +25,6 @@ void DoWorkerJob(ServerServiceRef& service)
 int main()
 {
 	ServerPacketHandler::Init();
-	GRoomManager.Add();
 
 	ServerServiceRef service = make_shared<ServerService>(
 		NetAddress(L"127.0.0.1", 7777),

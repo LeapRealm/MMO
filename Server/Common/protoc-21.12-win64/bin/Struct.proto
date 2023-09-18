@@ -5,18 +5,23 @@ import "Enum.proto";
 
 message PlayerInfo
 {
-	uint64 playerID = 1;
-	string name = 2;
-	Vector positon = 3;
+	uint64 objectID = 1;
+	Transform transform = 2;
 }
 
 message Transform
 {
-	Vector positon = 1;
-	float rotationYaw = 2;
+	Vector3D position = 1;
+	float yaw = 2;
 }
 
-message Vector
+message Vector2D
+{
+	float x = 1;
+	float y = 2;
+}
+
+message Vector3D
 {
 	float x = 1;
 	float y = 2;
