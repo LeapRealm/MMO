@@ -53,7 +53,7 @@ message C_MOVE
 
 message S_MOVE
 {
-	uint64 playerID = 1;
+	uint64 objectID = 1;
 	Vector3D position = 2;
 }
 

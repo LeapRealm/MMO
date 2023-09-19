@@ -1539,7 +1539,7 @@ class S_MOVE final :
 
   enum : int {
     kPositionFieldNumber = 2,
-    kPlayerIDFieldNumber = 1,
+    kObjectIDFieldNumber = 1,
   };
   // .Protocol.Vector3D position = 2;
   bool has_position() const;
@@ -1559,13 +1559,13 @@ class S_MOVE final :
       ::Protocol::Vector3D* position);
   ::Protocol::Vector3D* unsafe_arena_release_position();
 
-  // uint64 playerID = 1;
-  void clear_playerid();
-  uint64_t playerid() const;
-  void set_playerid(uint64_t value);
+  // uint64 objectID = 1;
+  void clear_objectid();
+  uint64_t objectid() const;
+  void set_objectid(uint64_t value);
   private:
-  uint64_t _internal_playerid() const;
-  void _internal_set_playerid(uint64_t value);
+  uint64_t _internal_objectid() const;
+  void _internal_set_objectid(uint64_t value);
   public:
 
   // @@protoc_insertion_point(class_scope:Protocol.S_MOVE)
@@ -1577,7 +1577,7 @@ class S_MOVE final :
   typedef void DestructorSkippable_;
   struct Impl_ {
     ::Protocol::Vector3D* position_;
-    uint64_t playerid_;
+    uint64_t objectid_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2298,24 +2298,24 @@ inline void C_MOVE::set_allocated_position(::Protocol::Vector3D* position) {
 
 // S_MOVE
 
-// uint64 playerID = 1;
-inline void S_MOVE::clear_playerid() {
-  _impl_.playerid_ = uint64_t{0u};
+// uint64 objectID = 1;
+inline void S_MOVE::clear_objectid() {
+  _impl_.objectid_ = uint64_t{0u};
 }
-inline uint64_t S_MOVE::_internal_playerid() const {
-  return _impl_.playerid_;
+inline uint64_t S_MOVE::_internal_objectid() const {
+  return _impl_.objectid_;
 }
-inline uint64_t S_MOVE::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_MOVE.playerID)
-  return _internal_playerid();
+inline uint64_t S_MOVE::objectid() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MOVE.objectID)
+  return _internal_objectid();
 }
-inline void S_MOVE::_internal_set_playerid(uint64_t value) {
+inline void S_MOVE::_internal_set_objectid(uint64_t value) {
   
-  _impl_.playerid_ = value;
+  _impl_.objectid_ = value;
 }
-inline void S_MOVE::set_playerid(uint64_t value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_MOVE.playerID)
+inline void S_MOVE::set_objectid(uint64_t value) {
+  _internal_set_objectid(value);
+  // @@protoc_insertion_point(field_set:Protocol.S_MOVE.objectID)
 }
 
 // .Protocol.Vector3D position = 2;

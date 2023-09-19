@@ -9,6 +9,7 @@ public:
 public:
 	bool HandleEnterPlayerLocked(PlayerRef player);
 	bool HandleLeavePlayerLocked(PlayerRef player);
+	bool HandleMovePlayerLocked(PlayerRef player, const Protocol::Vector3D& position);
 
 private:
 	bool EnterPlayer(PlayerRef player);

@@ -28,7 +28,7 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	Protocol::Vector3D* position = transform->mutable_position();
 	position->set_x(Utils::GetRandom(0.f, 500.f));
 	position->set_y(Utils::GetRandom(0.f, 500.f));
-	position->set_z(Utils::GetRandom(0.f, 500.f));
+	position->set_z(0.f);
 
 	{
 		Protocol::S_ENTER_GAME enterGamePkt;
@@ -95,6 +95,26 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 		if (SessionRef session = player->session.lock())
 			session->Send(sendBuffer);
 	}
+
+	return true;
+}
+
+bool Room::HandleMovePlayerLocked(PlayerRef player, const Protocol::Vector3D& position)
+{
+	if (player == nullptr)
+		return false;
+
+	WRITE_LOCK;
+
+	const uint64 objectID = player->playerInfo->objectid();
+	player->playerInfo->mutable_transform()->mutable_position()->CopyFrom(position);
+
+	Protocol::S_MOVE movePkt;
+	movePkt.set_objectid(objectID);
+	movePkt.mutable_position()->CopyFrom(position);
+
+	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
+	Broadcast(sendBuffer, objectID);
 
 	return true;
 }

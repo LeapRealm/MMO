@@ -138,7 +138,7 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT PROTOBUF_ATTRIBUTE_INIT_PRIORIT
 PROTOBUF_CONSTEXPR S_MOVE::S_MOVE(
     ::_pbi::ConstantInitialized): _impl_{
     /*decltype(_impl_.position_)*/nullptr
-  , /*decltype(_impl_.playerid_)*/uint64_t{0u}
+  , /*decltype(_impl_.objectid_)*/uint64_t{0u}
   , /*decltype(_impl_._cached_size_)*/{}} {}
 struct S_MOVEDefaultTypeInternal {
   PROTOBUF_CONSTEXPR S_MOVEDefaultTypeInternal()
@@ -250,7 +250,7 @@ const uint32_t TableStruct_Protocol_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
   ~0u,  // no _inlined_string_donated_
-  PROTOBUF_FIELD_OFFSET(::Protocol::S_MOVE, _impl_.playerid_),
+  PROTOBUF_FIELD_OFFSET(::Protocol::S_MOVE, _impl_.objectid_),
   PROTOBUF_FIELD_OFFSET(::Protocol::S_MOVE, _impl_.position_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::Protocol::C_CHAT, _internal_metadata_),
@@ -309,7 +309,7 @@ const char descriptor_table_protodef_Protocol_2eproto[] PROTOBUF_SECTION_VARIABL
   "N\022%\n\007players\030\001 \003(\0132\024.Protocol.PlayerInfo"
   "\"\036\n\tS_DESPAWN\022\021\n\tobjectIDs\030\001 \003(\004\".\n\006C_MO"
   "VE\022$\n\010position\030\001 \001(\0132\022.Protocol.Vector3D"
-  "\"@\n\006S_MOVE\022\020\n\010playerID\030\001 \001(\004\022$\n\010position"
+  "\"@\n\006S_MOVE\022\020\n\010objectID\030\001 \001(\004\022$\n\010position"
   "\030\002 \001(\0132\022.Protocol.Vector3D\"\025\n\006C_CHAT\022\013\n\003"
   "msg\030\001 \001(\t\"\'\n\006S_CHAT\022\020\n\010playerID\030\001 \001(\004\022\013\n"
   "\003msg\030\002 \001(\tb\006proto3"
@@ -1686,14 +1686,14 @@ S_MOVE::S_MOVE(const S_MOVE& from)
   S_MOVE* const _this = this; (void)_this;
   new (&_impl_) Impl_{
       decltype(_impl_.position_){nullptr}
-    , decltype(_impl_.playerid_){}
+    , decltype(_impl_.objectid_){}
     , /*decltype(_impl_._cached_size_)*/{}};
 
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
   if (from._internal_has_position()) {
     _this->_impl_.position_ = new ::Protocol::Vector3D(*from._impl_.position_);
   }
-  _this->_impl_.playerid_ = from._impl_.playerid_;
+  _this->_impl_.objectid_ = from._impl_.objectid_;
   // @@protoc_insertion_point(copy_constructor:Protocol.S_MOVE)
 }
 
@@ -1703,7 +1703,7 @@ inline void S_MOVE::SharedCtor(
   (void)is_message_owned;
   new (&_impl_) Impl_{
       decltype(_impl_.position_){nullptr}
-    , decltype(_impl_.playerid_){uint64_t{0u}}
+    , decltype(_impl_.objectid_){uint64_t{0u}}
     , /*decltype(_impl_._cached_size_)*/{}
   };
 }
@@ -1736,7 +1736,7 @@ void S_MOVE::Clear() {
     delete _impl_.position_;
   }
   _impl_.position_ = nullptr;
-  _impl_.playerid_ = uint64_t{0u};
+  _impl_.objectid_ = uint64_t{0u};
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -1746,10 +1746,10 @@ const char* S_MOVE::_InternalParse(const char* ptr, ::_pbi::ParseContext* ctx) {
     uint32_t tag;
     ptr = ::_pbi::ReadTag(ptr, &tag);
     switch (tag >> 3) {
-      // uint64 playerID = 1;
+      // uint64 objectID = 1;
       case 1:
         if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
-          _impl_.playerid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          _impl_.objectid_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
         } else
           goto handle_unusual;
@@ -1791,10 +1791,10 @@ uint8_t* S_MOVE::_InternalSerialize(
   uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // uint64 playerID = 1;
-  if (this->_internal_playerid() != 0) {
+  // uint64 objectID = 1;
+  if (this->_internal_objectid() != 0) {
     target = stream->EnsureSpace(target);
-    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_playerid(), target);
+    target = ::_pbi::WireFormatLite::WriteUInt64ToArray(1, this->_internal_objectid(), target);
   }
 
   // .Protocol.Vector3D position = 2;
@@ -1827,9 +1827,9 @@ size_t S_MOVE::ByteSizeLong() const {
         *_impl_.position_);
   }
 
-  // uint64 playerID = 1;
-  if (this->_internal_playerid() != 0) {
-    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_playerid());
+  // uint64 objectID = 1;
+  if (this->_internal_objectid() != 0) {
+    total_size += ::_pbi::WireFormatLite::UInt64SizePlusOne(this->_internal_objectid());
   }
 
   return MaybeComputeUnknownFieldsSize(total_size, &_impl_._cached_size_);
@@ -1854,8 +1854,8 @@ void S_MOVE::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBU
     _this->_internal_mutable_position()->::Protocol::Vector3D::MergeFrom(
         from._internal_position());
   }
-  if (from._internal_playerid() != 0) {
-    _this->_internal_set_playerid(from._internal_playerid());
+  if (from._internal_objectid() != 0) {
+    _this->_internal_set_objectid(from._internal_objectid());
   }
   _this->_internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
@@ -1875,8 +1875,8 @@ void S_MOVE::InternalSwap(S_MOVE* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
-      PROTOBUF_FIELD_OFFSET(S_MOVE, _impl_.playerid_)
-      + sizeof(S_MOVE::_impl_.playerid_)
+      PROTOBUF_FIELD_OFFSET(S_MOVE, _impl_.objectid_)
+      + sizeof(S_MOVE::_impl_.objectid_)
       - PROTOBUF_FIELD_OFFSET(S_MOVE, _impl_.position_)>(
           reinterpret_cast<char*>(&_impl_.position_),
           reinterpret_cast<char*>(&other->_impl_.position_));

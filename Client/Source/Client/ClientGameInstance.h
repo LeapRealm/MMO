@@ -27,13 +27,15 @@ public:
 	void SendPacket(SendBufferRef SendBuffer);
 
 public:
-	void HandleSpawn(const Protocol::PlayerInfo& PlayerInfo);
+	APawn* HandleSpawn(const Protocol::PlayerInfo& PlayerInfo);
 	void HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt);
 	void HandleSpawn(const Protocol::S_SPAWN& SpawnPkt);
 
 	void HandleDespawn(uint64 ObjectID);
 	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);
-	
+
+	void HandleMove(const Protocol::S_MOVE& MovePkt);
+
 public:
 	FSocket* Socket;
 	FString IPAddress = TEXT("127.0.0.1");
@@ -45,5 +47,5 @@ public:
 	TSubclassOf<APawn> PlayerClass;
 
 	UPROPERTY(VisibleAnywhere)
-	TMap<uint64, TObjectPtr<AActor>> Players;
+	TMap<uint64, TObjectPtr<APawn>> Players;
 };
