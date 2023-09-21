@@ -4,6 +4,7 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
+class UCapsuleComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class UClientGameInstance;
@@ -16,45 +17,48 @@ class CLIENT_API APlayerPawn : public APawn
 public:
 	APlayerPawn();
 
-protected:
+public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void PossessedBy(AController* NewController) override;
 
-protected:
+public:
 	UFUNCTION(BlueprintCallable)
 	void HandleMove(FVector2D Input);
 
-	UFUNCTION(BlueprintCallable)
-	void HandleJump(bool Input);
+private:
+	void SendMovePacket();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector TargetPosition;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector SimulatedPlayerTargetPosition;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FRotator TargetRotation;
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector ControlledPlayerVelocity;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bPlayerControlled = false;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float MoveSpeed = 450.f;
-	float RotSpeed = 720.f;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float RotationSpeed = 720.f;
+
+public:
 	float MovePktTime = 0.f;
 	float TargetMovePktTime = 0.15f;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	
 	FVector2D PrevInput;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector Velocity;
+	FRotator TargetRotation;
 	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UClientGameInstance> ClientGameInstance;
-
-public:
+	
 	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USceneComponent> SceneComponent;
+	TObjectPtr<UCapsuleComponent> CapsuleComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> SpringArmComponent;
@@ -64,8 +68,4 @@ public:
 	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
-
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	bool IsFalling;
 };

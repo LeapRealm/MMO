@@ -3,6 +3,7 @@
 #include "ClientGameInstance.h"
 #include "ClientPacketHandler.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -10,8 +11,13 @@ APlayerPawn::APlayerPawn()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	SceneComponent = CreateDefaultSubobject<USceneComponent>(TEXT("SceneComponent"));
-	SetRootComponent(SceneComponent);
+	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+	SetRootComponent(CapsuleComponent);
+	CapsuleComponent->SetCapsuleHalfHeight(88.f);
+	CapsuleComponent->SetCapsuleRadius(35.f);
+	CapsuleComponent->SetCollisionProfileName(FName("Pawn"));
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	CapsuleComponent->SetCollisionObjectType(ECC_Pawn);
 
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArmComponent"));
 	SpringArmComponent->SetupAttachment(GetRootComponent());
@@ -24,6 +30,7 @@ APlayerPawn::APlayerPawn()
 	
 	SkeletalMeshComponent = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMeshComponent"));
 	SkeletalMeshComponent->SetupAttachment(GetRootComponent());
+	SkeletalMeshComponent->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 }
 
 void APlayerPawn::BeginPlay()
@@ -32,28 +39,35 @@ void APlayerPawn::BeginPlay()
 
 	ClientGameInstance = Cast<UClientGameInstance>(GetGameInstance());
 
-	TargetPosition = GetActorLocation();
+	SimulatedPlayerTargetPosition = GetActorLocation();
 	TargetRotation = GetActorRotation();
 }
 
 void APlayerPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), TargetPosition, DeltaTime, MoveSpeed));
-	SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), TargetRotation, DeltaTime, RotSpeed));
-	
-	MovePktTime += DeltaTime;
-}
 
-void APlayerPawn::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	if (bPlayerControlled)
+	{
+		AddActorWorldOffset(ControlledPlayerVelocity * DeltaTime, true);
+		
+		if (MovePktTime >= TargetMovePktTime)
+			SendMovePacket();
+		MovePktTime += DeltaTime;
+	}
+	else
+	{
+		SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), SimulatedPlayerTargetPosition, DeltaTime, MoveSpeed), true);
+	}
+	
+	SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), TargetRotation, DeltaTime, RotationSpeed));
 }
 
 void APlayerPawn::PossessedBy(AController* NewController)
 {
 	Super::PossessedBy(NewController);
+
+	bPlayerControlled = true;
 }
 
 void APlayerPawn::HandleMove(FVector2D Input)
@@ -63,37 +77,29 @@ void APlayerPawn::HandleMove(FVector2D Input)
 	FVector Right = UKismetMathLibrary::GetRightVector(Rotation);
 	
 	FVector Direction = (Input.X * Forward + Input.Y * Right).GetSafeNormal();
-	AddActorWorldOffset(Direction * GetWorld()->DeltaTimeSeconds * MoveSpeed);
-	TargetPosition = GetActorLocation();
-
+	ControlledPlayerVelocity = Direction * MoveSpeed;
+	
 	if (Input != FVector2D::ZeroVector)
 		TargetRotation = FRotator(0.f, UKismetMathLibrary::Conv_VectorToRotator(Direction).Yaw, 0.f);
 
-	if (MovePktTime >= TargetMovePktTime || PrevInput != Input)
+	if (PrevInput != Input)
 	{
-		MovePktTime = 0.f;
-
-		Protocol::C_MOVE MovePkt;
-		Protocol::Vector3D* Position = MovePkt.mutable_transform()->mutable_position();
-		MovePkt.mutable_transform()->set_yaw(TargetRotation.Yaw);
-		
-		FVector Pos = GetActorLocation();
-		if (Input != FVector2D::ZeroVector)
-			Pos += Direction * 75.f;
-		
-		Position->set_x(Pos.X);
-		Position->set_y(Pos.Y);
-		Position->set_z(Pos.Z);
-		SEND_PACKET(MovePkt);
+		PrevInput = Input;
+		SendMovePacket();
 	}
-
-	PrevInput = Input;
 }
 
-void APlayerPawn::HandleJump(bool Input)
+void APlayerPawn::SendMovePacket()
 {
-	if (IsFalling || Input == false)
-		return;
+	MovePktTime = 0.f;
 
-	IsFalling = true;
+	Protocol::C_MOVE MovePkt;
+	Protocol::Vector3D* Position = MovePkt.mutable_transform()->mutable_position();
+	MovePkt.mutable_transform()->set_yaw(TargetRotation.Yaw);
+		
+	FVector Pos = GetActorLocation() + (ControlledPlayerVelocity * 0.5f);
+	Position->set_x(Pos.X);
+	Position->set_y(Pos.Y);
+	Position->set_z(Pos.Z);
+	SEND_PACKET(MovePkt);
 }
