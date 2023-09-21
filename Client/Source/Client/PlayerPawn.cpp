@@ -49,15 +49,24 @@ void APlayerPawn::Tick(float DeltaTime)
 
 	if (bPlayerControlled)
 	{
-		AddActorWorldOffset(ControlledPlayerVelocity * DeltaTime, true);
+		FHitResult HitResult;
+		AddActorWorldOffset(ControlledPlayerVelocity * DeltaTime, true, &HitResult);
+
+		if (HitResult.bBlockingHit)
+			ControlledPlayerVelocity = FVector::ZeroVector;
 		
-		if (MovePktTime >= TargetMovePktTime)
+		if (PrevHitResult.bBlockingHit == false && HitResult.bBlockingHit)
+			ShouldSendMovePkt = true;
+		
+		PrevHitResult = HitResult;
+		
+		if (MovePktTime >= TargetMovePktTime || ShouldSendMovePkt)
 			SendMovePacket();
 		MovePktTime += DeltaTime;
 	}
 	else
 	{
-		SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), SimulatedPlayerTargetPosition, DeltaTime, MoveSpeed), true);
+		SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), SimulatedPlayerTargetPosition, DeltaTime, MoveSpeed));
 	}
 	
 	SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), TargetRotation, DeltaTime, RotationSpeed));
@@ -77,29 +86,30 @@ void APlayerPawn::HandleMove(FVector2D Input)
 	FVector Right = UKismetMathLibrary::GetRightVector(Rotation);
 	
 	FVector Direction = (Input.X * Forward + Input.Y * Right).GetSafeNormal();
-	ControlledPlayerVelocity = Direction * MoveSpeed;
-	
 	if (Input != FVector2D::ZeroVector)
 		TargetRotation = FRotator(0.f, UKismetMathLibrary::Conv_VectorToRotator(Direction).Yaw, 0.f);
 
+	ControlledPlayerVelocity = Direction * MoveSpeed;
+	
 	if (PrevInput != Input)
 	{
 		PrevInput = Input;
-		SendMovePacket();
+		ShouldSendMovePkt = true;
 	}
 }
 
 void APlayerPawn::SendMovePacket()
 {
+	ShouldSendMovePkt = false;
 	MovePktTime = 0.f;
 
 	Protocol::C_MOVE MovePkt;
 	Protocol::Vector3D* Position = MovePkt.mutable_transform()->mutable_position();
 	MovePkt.mutable_transform()->set_yaw(TargetRotation.Yaw);
-		
-	FVector Pos = GetActorLocation() + (ControlledPlayerVelocity * 0.5f);
-	Position->set_x(Pos.X);
-	Position->set_y(Pos.Y);
-	Position->set_z(Pos.Z);
+	
+	FVector TargetPos = GetActorLocation() + (ControlledPlayerVelocity * 0.5f);
+	Position->set_x(TargetPos.X);
+	Position->set_y(TargetPos.Y);
+	Position->set_z(TargetPos.Z);
 	SEND_PACKET(MovePkt);
 }

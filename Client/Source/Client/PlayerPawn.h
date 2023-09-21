@@ -47,10 +47,12 @@ public:
 	float RotationSpeed = 720.f;
 
 public:
+	bool ShouldSendMovePkt = false;
 	float MovePktTime = 0.f;
 	float TargetMovePktTime = 0.15f;
-	
+
 	FVector2D PrevInput;
+	FHitResult PrevHitResult;
 	FRotator TargetRotation;
 	
 private:
