@@ -4,6 +4,8 @@
 #include "GameFramework/Pawn.h"
 #include "PlayerPawn.generated.h"
 
+class USpringArmComponent;
+class UCameraComponent;
 class UClientGameInstance;
 
 UCLASS()
@@ -24,22 +26,46 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void HandleMove(FVector2D Input);
 
+	UFUNCTION(BlueprintCallable)
+	void HandleJump(bool Input);
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector TargetPosition;
-	
-	UPROPERTY(VisibleAnywhere)
-	float Speed = 450.f;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator TargetRotation;
+	
+	float MoveSpeed = 450.f;
+	float RotSpeed = 720.f;
+	
 	float MovePktTime = 0.f;
 	float TargetMovePktTime = 0.15f;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector2D PrevInput;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector Velocity;
 	
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UClientGameInstance> ClientGameInstance;
 
+public:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USceneComponent> SceneComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USpringArmComponent> SpringArmComponent;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UCameraComponent> CameraComponent;
+	
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USkeletalMeshComponent> SkeletalMeshComponent;
+
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool IsFalling;
 };

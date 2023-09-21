@@ -99,7 +99,7 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 	return true;
 }
 
-bool Room::HandleMovePlayerLocked(PlayerRef player, const Protocol::Vector3D& position)
+bool Room::HandleMovePlayerLocked(PlayerRef player, const Protocol::Transform& newTransform)
 {
 	if (player == nullptr)
 		return false;
@@ -107,11 +107,15 @@ bool Room::HandleMovePlayerLocked(PlayerRef player, const Protocol::Vector3D& po
 	WRITE_LOCK;
 
 	const uint64 objectID = player->playerInfo->objectid();
-	player->playerInfo->mutable_transform()->mutable_position()->CopyFrom(position);
+	Protocol::Transform* transform = player->playerInfo->mutable_transform();
+	Protocol::Vector3D* position = transform->mutable_position();
+
+	position->CopyFrom(newTransform.position());
+	transform->set_yaw(newTransform.yaw());
 
 	Protocol::S_MOVE movePkt;
 	movePkt.set_objectid(objectID);
-	movePkt.mutable_position()->CopyFrom(position);
+	movePkt.mutable_transform()->CopyFrom(newTransform);
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
 	Broadcast(sendBuffer, objectID);

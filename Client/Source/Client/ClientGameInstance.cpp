@@ -8,6 +8,7 @@
 #include "SocketSubsystem.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UClientGameInstance::ConnectToGameServer()
 {
@@ -135,6 +136,10 @@ void UClientGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 	if (Players.Contains(ObjectID) == false)
 		return;
 
-	const Protocol::Vector3D& Position = MovePkt.position();
-	Cast<APlayerPawn>(Players[ObjectID])->TargetPosition = FVector(Position.x(), Position.y(), Position.z());
+	const Protocol::Vector3D& Position = MovePkt.transform().position();
+	if (APlayerPawn* TargetPawn = Cast<APlayerPawn>(Players[ObjectID]))
+	{
+		TargetPawn->TargetPosition = FVector(Position.x(), Position.y(), Position.z());
+		TargetPawn->TargetRotation = FRotator(0.f, MovePkt.transform().yaw(), 0.f);
+	}
 }

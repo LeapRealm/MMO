@@ -75,7 +75,7 @@ bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
 	if (room == nullptr)
 		return false;
 
-	room->HandleMovePlayerLocked(player, pkt.position());
+	room->HandleMovePlayerLocked(player, pkt.transform());
 
 	return true;
 }

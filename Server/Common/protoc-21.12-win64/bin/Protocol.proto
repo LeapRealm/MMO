@@ -48,13 +48,13 @@ message S_DESPAWN
 
 message C_MOVE
 {
-	Vector3D position = 1;
+	Transform transform = 1;
 }
 
 message S_MOVE
 {
 	uint64 objectID = 1;
-	Vector3D position = 2;
+	Transform transform = 2;
 }
 
 // FOR TEST
