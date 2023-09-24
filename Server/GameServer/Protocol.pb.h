@@ -1381,25 +1381,25 @@ class C_MOVE final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPositionFieldNumber = 1,
+    kInfoFieldNumber = 1,
   };
-  // .Protocol.Vector3D position = 1;
-  bool has_position() const;
+  // .Protocol.PlayerInfo info = 1;
+  bool has_info() const;
   private:
-  bool _internal_has_position() const;
+  bool _internal_has_info() const;
   public:
-  void clear_position();
-  const ::Protocol::Vector3D& position() const;
-  PROTOBUF_NODISCARD ::Protocol::Vector3D* release_position();
-  ::Protocol::Vector3D* mutable_position();
-  void set_allocated_position(::Protocol::Vector3D* position);
+  void clear_info();
+  const ::Protocol::PlayerInfo& info() const;
+  PROTOBUF_NODISCARD ::Protocol::PlayerInfo* release_info();
+  ::Protocol::PlayerInfo* mutable_info();
+  void set_allocated_info(::Protocol::PlayerInfo* info);
   private:
-  const ::Protocol::Vector3D& _internal_position() const;
-  ::Protocol::Vector3D* _internal_mutable_position();
+  const ::Protocol::PlayerInfo& _internal_info() const;
+  ::Protocol::PlayerInfo* _internal_mutable_info();
   public:
-  void unsafe_arena_set_allocated_position(
-      ::Protocol::Vector3D* position);
-  ::Protocol::Vector3D* unsafe_arena_release_position();
+  void unsafe_arena_set_allocated_info(
+      ::Protocol::PlayerInfo* info);
+  ::Protocol::PlayerInfo* unsafe_arena_release_info();
 
   // @@protoc_insertion_point(class_scope:Protocol.C_MOVE)
  private:
@@ -1409,7 +1409,7 @@ class C_MOVE final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::Vector3D* position_;
+    ::Protocol::PlayerInfo* info_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -1538,35 +1538,25 @@ class S_MOVE final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPositionFieldNumber = 2,
-    kPlayerIDFieldNumber = 1,
+    kInfoFieldNumber = 1,
   };
-  // .Protocol.Vector3D position = 2;
-  bool has_position() const;
+  // .Protocol.PlayerInfo info = 1;
+  bool has_info() const;
   private:
-  bool _internal_has_position() const;
+  bool _internal_has_info() const;
   public:
-  void clear_position();
-  const ::Protocol::Vector3D& position() const;
-  PROTOBUF_NODISCARD ::Protocol::Vector3D* release_position();
-  ::Protocol::Vector3D* mutable_position();
-  void set_allocated_position(::Protocol::Vector3D* position);
+  void clear_info();
+  const ::Protocol::PlayerInfo& info() const;
+  PROTOBUF_NODISCARD ::Protocol::PlayerInfo* release_info();
+  ::Protocol::PlayerInfo* mutable_info();
+  void set_allocated_info(::Protocol::PlayerInfo* info);
   private:
-  const ::Protocol::Vector3D& _internal_position() const;
-  ::Protocol::Vector3D* _internal_mutable_position();
+  const ::Protocol::PlayerInfo& _internal_info() const;
+  ::Protocol::PlayerInfo* _internal_mutable_info();
   public:
-  void unsafe_arena_set_allocated_position(
-      ::Protocol::Vector3D* position);
-  ::Protocol::Vector3D* unsafe_arena_release_position();
-
-  // uint64 playerID = 1;
-  void clear_playerid();
-  uint64_t playerid() const;
-  void set_playerid(uint64_t value);
-  private:
-  uint64_t _internal_playerid() const;
-  void _internal_set_playerid(uint64_t value);
-  public:
+  void unsafe_arena_set_allocated_info(
+      ::Protocol::PlayerInfo* info);
+  ::Protocol::PlayerInfo* unsafe_arena_release_info();
 
   // @@protoc_insertion_point(class_scope:Protocol.S_MOVE)
  private:
@@ -1576,8 +1566,7 @@ class S_MOVE final :
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   struct Impl_ {
-    ::Protocol::Vector3D* position_;
-    uint64_t playerid_;
+    ::Protocol::PlayerInfo* info_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -2209,39 +2198,39 @@ S_DESPAWN::mutable_objectids() {
 
 // C_MOVE
 
-// .Protocol.Vector3D position = 1;
-inline bool C_MOVE::_internal_has_position() const {
-  return this != internal_default_instance() && _impl_.position_ != nullptr;
+// .Protocol.PlayerInfo info = 1;
+inline bool C_MOVE::_internal_has_info() const {
+  return this != internal_default_instance() && _impl_.info_ != nullptr;
 }
-inline bool C_MOVE::has_position() const {
-  return _internal_has_position();
+inline bool C_MOVE::has_info() const {
+  return _internal_has_info();
 }
-inline const ::Protocol::Vector3D& C_MOVE::_internal_position() const {
-  const ::Protocol::Vector3D* p = _impl_.position_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Vector3D&>(
-      ::Protocol::_Vector3D_default_instance_);
+inline const ::Protocol::PlayerInfo& C_MOVE::_internal_info() const {
+  const ::Protocol::PlayerInfo* p = _impl_.info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerInfo&>(
+      ::Protocol::_PlayerInfo_default_instance_);
 }
-inline const ::Protocol::Vector3D& C_MOVE::position() const {
-  // @@protoc_insertion_point(field_get:Protocol.C_MOVE.position)
-  return _internal_position();
+inline const ::Protocol::PlayerInfo& C_MOVE::info() const {
+  // @@protoc_insertion_point(field_get:Protocol.C_MOVE.info)
+  return _internal_info();
 }
-inline void C_MOVE::unsafe_arena_set_allocated_position(
-    ::Protocol::Vector3D* position) {
+inline void C_MOVE::unsafe_arena_set_allocated_info(
+    ::Protocol::PlayerInfo* info) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.position_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
   }
-  _impl_.position_ = position;
-  if (position) {
+  _impl_.info_ = info;
+  if (info) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_MOVE.position)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.C_MOVE.info)
 }
-inline ::Protocol::Vector3D* C_MOVE::release_position() {
+inline ::Protocol::PlayerInfo* C_MOVE::release_info() {
   
-  ::Protocol::Vector3D* temp = _impl_.position_;
-  _impl_.position_ = nullptr;
+  ::Protocol::PlayerInfo* temp = _impl_.info_;
+  _impl_.info_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -2253,104 +2242,84 @@ inline ::Protocol::Vector3D* C_MOVE::release_position() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::Vector3D* C_MOVE::unsafe_arena_release_position() {
-  // @@protoc_insertion_point(field_release:Protocol.C_MOVE.position)
+inline ::Protocol::PlayerInfo* C_MOVE::unsafe_arena_release_info() {
+  // @@protoc_insertion_point(field_release:Protocol.C_MOVE.info)
   
-  ::Protocol::Vector3D* temp = _impl_.position_;
-  _impl_.position_ = nullptr;
+  ::Protocol::PlayerInfo* temp = _impl_.info_;
+  _impl_.info_ = nullptr;
   return temp;
 }
-inline ::Protocol::Vector3D* C_MOVE::_internal_mutable_position() {
+inline ::Protocol::PlayerInfo* C_MOVE::_internal_mutable_info() {
   
-  if (_impl_.position_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::Vector3D>(GetArenaForAllocation());
-    _impl_.position_ = p;
+  if (_impl_.info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::PlayerInfo>(GetArenaForAllocation());
+    _impl_.info_ = p;
   }
-  return _impl_.position_;
+  return _impl_.info_;
 }
-inline ::Protocol::Vector3D* C_MOVE::mutable_position() {
-  ::Protocol::Vector3D* _msg = _internal_mutable_position();
-  // @@protoc_insertion_point(field_mutable:Protocol.C_MOVE.position)
+inline ::Protocol::PlayerInfo* C_MOVE::mutable_info() {
+  ::Protocol::PlayerInfo* _msg = _internal_mutable_info();
+  // @@protoc_insertion_point(field_mutable:Protocol.C_MOVE.info)
   return _msg;
 }
-inline void C_MOVE::set_allocated_position(::Protocol::Vector3D* position) {
+inline void C_MOVE::set_allocated_info(::Protocol::PlayerInfo* info) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.position_);
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
   }
-  if (position) {
+  if (info) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
         ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(position));
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(info));
     if (message_arena != submessage_arena) {
-      position = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, position, submessage_arena);
+      info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, info, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.position_ = position;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.C_MOVE.position)
+  _impl_.info_ = info;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.C_MOVE.info)
 }
 
 // -------------------------------------------------------------------
 
 // S_MOVE
 
-// uint64 playerID = 1;
-inline void S_MOVE::clear_playerid() {
-  _impl_.playerid_ = uint64_t{0u};
+// .Protocol.PlayerInfo info = 1;
+inline bool S_MOVE::_internal_has_info() const {
+  return this != internal_default_instance() && _impl_.info_ != nullptr;
 }
-inline uint64_t S_MOVE::_internal_playerid() const {
-  return _impl_.playerid_;
+inline bool S_MOVE::has_info() const {
+  return _internal_has_info();
 }
-inline uint64_t S_MOVE::playerid() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_MOVE.playerID)
-  return _internal_playerid();
+inline const ::Protocol::PlayerInfo& S_MOVE::_internal_info() const {
+  const ::Protocol::PlayerInfo* p = _impl_.info_;
+  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::PlayerInfo&>(
+      ::Protocol::_PlayerInfo_default_instance_);
 }
-inline void S_MOVE::_internal_set_playerid(uint64_t value) {
-  
-  _impl_.playerid_ = value;
+inline const ::Protocol::PlayerInfo& S_MOVE::info() const {
+  // @@protoc_insertion_point(field_get:Protocol.S_MOVE.info)
+  return _internal_info();
 }
-inline void S_MOVE::set_playerid(uint64_t value) {
-  _internal_set_playerid(value);
-  // @@protoc_insertion_point(field_set:Protocol.S_MOVE.playerID)
-}
-
-// .Protocol.Vector3D position = 2;
-inline bool S_MOVE::_internal_has_position() const {
-  return this != internal_default_instance() && _impl_.position_ != nullptr;
-}
-inline bool S_MOVE::has_position() const {
-  return _internal_has_position();
-}
-inline const ::Protocol::Vector3D& S_MOVE::_internal_position() const {
-  const ::Protocol::Vector3D* p = _impl_.position_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Vector3D&>(
-      ::Protocol::_Vector3D_default_instance_);
-}
-inline const ::Protocol::Vector3D& S_MOVE::position() const {
-  // @@protoc_insertion_point(field_get:Protocol.S_MOVE.position)
-  return _internal_position();
-}
-inline void S_MOVE::unsafe_arena_set_allocated_position(
-    ::Protocol::Vector3D* position) {
+inline void S_MOVE::unsafe_arena_set_allocated_info(
+    ::Protocol::PlayerInfo* info) {
   if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.position_);
+    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
   }
-  _impl_.position_ = position;
-  if (position) {
+  _impl_.info_ = info;
+  if (info) {
     
   } else {
     
   }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_MOVE.position)
+  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.S_MOVE.info)
 }
-inline ::Protocol::Vector3D* S_MOVE::release_position() {
+inline ::Protocol::PlayerInfo* S_MOVE::release_info() {
   
-  ::Protocol::Vector3D* temp = _impl_.position_;
-  _impl_.position_ = nullptr;
+  ::Protocol::PlayerInfo* temp = _impl_.info_;
+  _impl_.info_ = nullptr;
 #ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
   auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
   temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
@@ -2362,45 +2331,45 @@ inline ::Protocol::Vector3D* S_MOVE::release_position() {
 #endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
   return temp;
 }
-inline ::Protocol::Vector3D* S_MOVE::unsafe_arena_release_position() {
-  // @@protoc_insertion_point(field_release:Protocol.S_MOVE.position)
+inline ::Protocol::PlayerInfo* S_MOVE::unsafe_arena_release_info() {
+  // @@protoc_insertion_point(field_release:Protocol.S_MOVE.info)
   
-  ::Protocol::Vector3D* temp = _impl_.position_;
-  _impl_.position_ = nullptr;
+  ::Protocol::PlayerInfo* temp = _impl_.info_;
+  _impl_.info_ = nullptr;
   return temp;
 }
-inline ::Protocol::Vector3D* S_MOVE::_internal_mutable_position() {
+inline ::Protocol::PlayerInfo* S_MOVE::_internal_mutable_info() {
   
-  if (_impl_.position_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::Vector3D>(GetArenaForAllocation());
-    _impl_.position_ = p;
+  if (_impl_.info_ == nullptr) {
+    auto* p = CreateMaybeMessage<::Protocol::PlayerInfo>(GetArenaForAllocation());
+    _impl_.info_ = p;
   }
-  return _impl_.position_;
+  return _impl_.info_;
 }
-inline ::Protocol::Vector3D* S_MOVE::mutable_position() {
-  ::Protocol::Vector3D* _msg = _internal_mutable_position();
-  // @@protoc_insertion_point(field_mutable:Protocol.S_MOVE.position)
+inline ::Protocol::PlayerInfo* S_MOVE::mutable_info() {
+  ::Protocol::PlayerInfo* _msg = _internal_mutable_info();
+  // @@protoc_insertion_point(field_mutable:Protocol.S_MOVE.info)
   return _msg;
 }
-inline void S_MOVE::set_allocated_position(::Protocol::Vector3D* position) {
+inline void S_MOVE::set_allocated_info(::Protocol::PlayerInfo* info) {
   ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
   if (message_arena == nullptr) {
-    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.position_);
+    delete reinterpret_cast< ::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.info_);
   }
-  if (position) {
+  if (info) {
     ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
         ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(
-                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(position));
+                reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(info));
     if (message_arena != submessage_arena) {
-      position = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, position, submessage_arena);
+      info = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
+          message_arena, info, submessage_arena);
     }
     
   } else {
     
   }
-  _impl_.position_ = position;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.S_MOVE.position)
+  _impl_.info_ = info;
+  // @@protoc_insertion_point(field_set_allocated:Protocol.S_MOVE.info)
 }
 
 // -------------------------------------------------------------------

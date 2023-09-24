@@ -23,12 +23,10 @@ bool Handle_C_LOGIN(PacketSessionRef& session, Protocol::C_LOGIN& pkt)
 		Protocol::PlayerInfo* player = loginPkt.add_players();
 
 		Protocol::Transform* transform = player->mutable_transform();
+		transform->set_x(Utils::GetRandom(0.f, 100.f));
+		transform->set_y(Utils::GetRandom(0.f, 100.f));
+		transform->set_z(Utils::GetRandom(0.f, 100.f));
 		transform->set_yaw(Utils::GetRandom(0.f, 45.f));
-
-		Protocol::Vector3D* position = transform->mutable_position();
-		position->set_x(Utils::GetRandom(0.f, 100.f));
-		position->set_y(Utils::GetRandom(0.f, 100.f));
-		position->set_z(Utils::GetRandom(0.f, 100.f));
 	}
 	loginPkt.set_success(true);
 
@@ -65,6 +63,18 @@ bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)
 
 bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
 {
+	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
+
+	PlayerRef player = gameSession->player.load();
+	if (player == nullptr)
+		return false;
+
+	RoomRef room = player->room.load().lock();
+	if (room == nullptr)
+		return false;
+
+	room->HandleMoveLocked(pkt);
+
 	return true;
 }
 

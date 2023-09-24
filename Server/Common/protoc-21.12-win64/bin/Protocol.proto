@@ -48,13 +48,12 @@ message S_DESPAWN
 
 message C_MOVE
 {
-	Vector3D position = 1;
+	PlayerInfo info = 1;
 }
 
 message S_MOVE
 {
-	uint64 playerID = 1;
-	Vector3D position = 2;
+	PlayerInfo info = 1;
 }
 
 // FOR TEST

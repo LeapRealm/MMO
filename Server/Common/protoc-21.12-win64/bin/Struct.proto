@@ -7,23 +7,13 @@ message PlayerInfo
 {
 	uint64 objectID = 1;
 	Transform transform = 2;
+	MoveState moveState = 3;
 }
 
 message Transform
 {
-	Vector3D position = 1;
-	float yaw = 2;
-}
-
-message Vector2D
-{
-	float x = 1;
-	float y = 2;
-}
-
-message Vector3D
-{
 	float x = 1;
 	float y = 2;
 	float z = 3;
+	float yaw = 4;
 }

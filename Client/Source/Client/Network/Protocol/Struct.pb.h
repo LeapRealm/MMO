@@ -52,18 +52,10 @@ extern PlayerInfoDefaultTypeInternal _PlayerInfo_default_instance_;
 class Transform;
 struct TransformDefaultTypeInternal;
 extern TransformDefaultTypeInternal _Transform_default_instance_;
-class Vector2D;
-struct Vector2DDefaultTypeInternal;
-extern Vector2DDefaultTypeInternal _Vector2D_default_instance_;
-class Vector3D;
-struct Vector3DDefaultTypeInternal;
-extern Vector3DDefaultTypeInternal _Vector3D_default_instance_;
 }  // namespace Protocol
 PROTOBUF_NAMESPACE_OPEN
 template<> ::Protocol::PlayerInfo* Arena::CreateMaybeMessage<::Protocol::PlayerInfo>(Arena*);
 template<> ::Protocol::Transform* Arena::CreateMaybeMessage<::Protocol::Transform>(Arena*);
-template<> ::Protocol::Vector2D* Arena::CreateMaybeMessage<::Protocol::Vector2D>(Arena*);
-template<> ::Protocol::Vector3D* Arena::CreateMaybeMessage<::Protocol::Vector3D>(Arena*);
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
@@ -192,6 +184,7 @@ class PlayerInfo final :
   enum : int {
     kTransformFieldNumber = 2,
     kObjectIDFieldNumber = 1,
+    kMoveStateFieldNumber = 3,
   };
   // .Protocol.Transform transform = 2;
   bool has_transform() const;
@@ -220,6 +213,15 @@ class PlayerInfo final :
   void _internal_set_objectid(uint64_t value);
   public:
 
+  // .Protocol.MoveState moveState = 3;
+  void clear_movestate();
+  ::Protocol::MoveState movestate() const;
+  void set_movestate(::Protocol::MoveState value);
+  private:
+  ::Protocol::MoveState _internal_movestate() const;
+  void _internal_set_movestate(::Protocol::MoveState value);
+  public:
+
   // @@protoc_insertion_point(class_scope:Protocol.PlayerInfo)
  private:
   class _Internal;
@@ -230,6 +232,7 @@ class PlayerInfo final :
   struct Impl_ {
     ::Protocol::Transform* transform_;
     uint64_t objectid_;
+    int movestate_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -358,336 +361,10 @@ class Transform final :
   // accessors -------------------------------------------------------
 
   enum : int {
-    kPositionFieldNumber = 1,
-    kYawFieldNumber = 2,
-  };
-  // .Protocol.Vector3D position = 1;
-  bool has_position() const;
-  private:
-  bool _internal_has_position() const;
-  public:
-  void clear_position();
-  const ::Protocol::Vector3D& position() const;
-  PROTOBUF_NODISCARD ::Protocol::Vector3D* release_position();
-  ::Protocol::Vector3D* mutable_position();
-  void set_allocated_position(::Protocol::Vector3D* position);
-  private:
-  const ::Protocol::Vector3D& _internal_position() const;
-  ::Protocol::Vector3D* _internal_mutable_position();
-  public:
-  void unsafe_arena_set_allocated_position(
-      ::Protocol::Vector3D* position);
-  ::Protocol::Vector3D* unsafe_arena_release_position();
-
-  // float yaw = 2;
-  void clear_yaw();
-  float yaw() const;
-  void set_yaw(float value);
-  private:
-  float _internal_yaw() const;
-  void _internal_set_yaw(float value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.Transform)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    ::Protocol::Vector3D* position_;
-    float yaw_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_Struct_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Vector2D final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.Vector2D) */ {
- public:
-  inline Vector2D() : Vector2D(nullptr) {}
-  ~Vector2D() override;
-  explicit PROTOBUF_CONSTEXPR Vector2D(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  Vector2D(const Vector2D& from);
-  Vector2D(Vector2D&& from) noexcept
-    : Vector2D() {
-    *this = ::std::move(from);
-  }
-
-  inline Vector2D& operator=(const Vector2D& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Vector2D& operator=(Vector2D&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const Vector2D& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const Vector2D* internal_default_instance() {
-    return reinterpret_cast<const Vector2D*>(
-               &_Vector2D_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    2;
-
-  friend void swap(Vector2D& a, Vector2D& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Vector2D* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Vector2D* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  Vector2D* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Vector2D>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Vector2D& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Vector2D& from) {
-    Vector2D::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Vector2D* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.Vector2D";
-  }
-  protected:
-  explicit Vector2D(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
-    kXFieldNumber = 1,
-    kYFieldNumber = 2,
-  };
-  // float x = 1;
-  void clear_x();
-  float x() const;
-  void set_x(float value);
-  private:
-  float _internal_x() const;
-  void _internal_set_x(float value);
-  public:
-
-  // float y = 2;
-  void clear_y();
-  float y() const;
-  void set_y(float value);
-  private:
-  float _internal_y() const;
-  void _internal_set_y(float value);
-  public:
-
-  // @@protoc_insertion_point(class_scope:Protocol.Vector2D)
- private:
-  class _Internal;
-
-  template <typename T> friend class ::PROTOBUF_NAMESPACE_ID::Arena::InternalHelper;
-  typedef void InternalArenaConstructable_;
-  typedef void DestructorSkippable_;
-  struct Impl_ {
-    float x_;
-    float y_;
-    mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
-  };
-  union { Impl_ _impl_; };
-  friend struct ::TableStruct_Struct_2eproto;
-};
-// -------------------------------------------------------------------
-
-class Vector3D final :
-    public ::PROTOBUF_NAMESPACE_ID::Message /* @@protoc_insertion_point(class_definition:Protocol.Vector3D) */ {
- public:
-  inline Vector3D() : Vector3D(nullptr) {}
-  ~Vector3D() override;
-  explicit PROTOBUF_CONSTEXPR Vector3D(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized);
-
-  Vector3D(const Vector3D& from);
-  Vector3D(Vector3D&& from) noexcept
-    : Vector3D() {
-    *this = ::std::move(from);
-  }
-
-  inline Vector3D& operator=(const Vector3D& from) {
-    CopyFrom(from);
-    return *this;
-  }
-  inline Vector3D& operator=(Vector3D&& from) noexcept {
-    if (this == &from) return *this;
-    if (GetOwningArena() == from.GetOwningArena()
-  #ifdef PROTOBUF_FORCE_COPY_IN_MOVE
-        && GetOwningArena() != nullptr
-  #endif  // !PROTOBUF_FORCE_COPY_IN_MOVE
-    ) {
-      InternalSwap(&from);
-    } else {
-      CopyFrom(from);
-    }
-    return *this;
-  }
-
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* descriptor() {
-    return GetDescriptor();
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Descriptor* GetDescriptor() {
-    return default_instance().GetMetadata().descriptor;
-  }
-  static const ::PROTOBUF_NAMESPACE_ID::Reflection* GetReflection() {
-    return default_instance().GetMetadata().reflection;
-  }
-  static const Vector3D& default_instance() {
-    return *internal_default_instance();
-  }
-  static inline const Vector3D* internal_default_instance() {
-    return reinterpret_cast<const Vector3D*>(
-               &_Vector3D_default_instance_);
-  }
-  static constexpr int kIndexInFileMessages =
-    3;
-
-  friend void swap(Vector3D& a, Vector3D& b) {
-    a.Swap(&b);
-  }
-  inline void Swap(Vector3D* other) {
-    if (other == this) return;
-  #ifdef PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() != nullptr &&
-        GetOwningArena() == other->GetOwningArena()) {
-   #else  // PROTOBUF_FORCE_COPY_IN_SWAP
-    if (GetOwningArena() == other->GetOwningArena()) {
-  #endif  // !PROTOBUF_FORCE_COPY_IN_SWAP
-      InternalSwap(other);
-    } else {
-      ::PROTOBUF_NAMESPACE_ID::internal::GenericSwap(this, other);
-    }
-  }
-  void UnsafeArenaSwap(Vector3D* other) {
-    if (other == this) return;
-    GOOGLE_DCHECK(GetOwningArena() == other->GetOwningArena());
-    InternalSwap(other);
-  }
-
-  // implements Message ----------------------------------------------
-
-  Vector3D* New(::PROTOBUF_NAMESPACE_ID::Arena* arena = nullptr) const final {
-    return CreateMaybeMessage<Vector3D>(arena);
-  }
-  using ::PROTOBUF_NAMESPACE_ID::Message::CopyFrom;
-  void CopyFrom(const Vector3D& from);
-  using ::PROTOBUF_NAMESPACE_ID::Message::MergeFrom;
-  void MergeFrom( const Vector3D& from) {
-    Vector3D::MergeImpl(*this, from);
-  }
-  private:
-  static void MergeImpl(::PROTOBUF_NAMESPACE_ID::Message& to_msg, const ::PROTOBUF_NAMESPACE_ID::Message& from_msg);
-  public:
-  PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
-  bool IsInitialized() const final;
-
-  size_t ByteSizeLong() const final;
-  const char* _InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) final;
-  uint8_t* _InternalSerialize(
-      uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const final;
-  int GetCachedSize() const final { return _impl_._cached_size_.Get(); }
-
-  private:
-  void SharedCtor(::PROTOBUF_NAMESPACE_ID::Arena* arena, bool is_message_owned);
-  void SharedDtor();
-  void SetCachedSize(int size) const final;
-  void InternalSwap(Vector3D* other);
-
-  private:
-  friend class ::PROTOBUF_NAMESPACE_ID::internal::AnyMetadata;
-  static ::PROTOBUF_NAMESPACE_ID::StringPiece FullMessageName() {
-    return "Protocol.Vector3D";
-  }
-  protected:
-  explicit Vector3D(::PROTOBUF_NAMESPACE_ID::Arena* arena,
-                       bool is_message_owned = false);
-  public:
-
-  static const ClassData _class_data_;
-  const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*GetClassData() const final;
-
-  ::PROTOBUF_NAMESPACE_ID::Metadata GetMetadata() const final;
-
-  // nested types ----------------------------------------------------
-
-  // accessors -------------------------------------------------------
-
-  enum : int {
     kXFieldNumber = 1,
     kYFieldNumber = 2,
     kZFieldNumber = 3,
+    kYawFieldNumber = 4,
   };
   // float x = 1;
   void clear_x();
@@ -716,7 +393,16 @@ class Vector3D final :
   void _internal_set_z(float value);
   public:
 
-  // @@protoc_insertion_point(class_scope:Protocol.Vector3D)
+  // float yaw = 4;
+  void clear_yaw();
+  float yaw() const;
+  void set_yaw(float value);
+  private:
+  float _internal_yaw() const;
+  void _internal_set_yaw(float value);
+  public:
+
+  // @@protoc_insertion_point(class_scope:Protocol.Transform)
  private:
   class _Internal;
 
@@ -727,6 +413,7 @@ class Vector3D final :
     float x_;
     float y_;
     float z_;
+    float yaw_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -853,101 +540,91 @@ inline void PlayerInfo::set_allocated_transform(::Protocol::Transform* transform
   // @@protoc_insertion_point(field_set_allocated:Protocol.PlayerInfo.transform)
 }
 
+// .Protocol.MoveState moveState = 3;
+inline void PlayerInfo::clear_movestate() {
+  _impl_.movestate_ = 0;
+}
+inline ::Protocol::MoveState PlayerInfo::_internal_movestate() const {
+  return static_cast< ::Protocol::MoveState >(_impl_.movestate_);
+}
+inline ::Protocol::MoveState PlayerInfo::movestate() const {
+  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.moveState)
+  return _internal_movestate();
+}
+inline void PlayerInfo::_internal_set_movestate(::Protocol::MoveState value) {
+  
+  _impl_.movestate_ = value;
+}
+inline void PlayerInfo::set_movestate(::Protocol::MoveState value) {
+  _internal_set_movestate(value);
+  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.moveState)
+}
+
 // -------------------------------------------------------------------
 
 // Transform
 
-// .Protocol.Vector3D position = 1;
-inline bool Transform::_internal_has_position() const {
-  return this != internal_default_instance() && _impl_.position_ != nullptr;
+// float x = 1;
+inline void Transform::clear_x() {
+  _impl_.x_ = 0;
 }
-inline bool Transform::has_position() const {
-  return _internal_has_position();
+inline float Transform::_internal_x() const {
+  return _impl_.x_;
 }
-inline void Transform::clear_position() {
-  if (GetArenaForAllocation() == nullptr && _impl_.position_ != nullptr) {
-    delete _impl_.position_;
-  }
-  _impl_.position_ = nullptr;
+inline float Transform::x() const {
+  // @@protoc_insertion_point(field_get:Protocol.Transform.x)
+  return _internal_x();
 }
-inline const ::Protocol::Vector3D& Transform::_internal_position() const {
-  const ::Protocol::Vector3D* p = _impl_.position_;
-  return p != nullptr ? *p : reinterpret_cast<const ::Protocol::Vector3D&>(
-      ::Protocol::_Vector3D_default_instance_);
-}
-inline const ::Protocol::Vector3D& Transform::position() const {
-  // @@protoc_insertion_point(field_get:Protocol.Transform.position)
-  return _internal_position();
-}
-inline void Transform::unsafe_arena_set_allocated_position(
-    ::Protocol::Vector3D* position) {
-  if (GetArenaForAllocation() == nullptr) {
-    delete reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(_impl_.position_);
-  }
-  _impl_.position_ = position;
-  if (position) {
-    
-  } else {
-    
-  }
-  // @@protoc_insertion_point(field_unsafe_arena_set_allocated:Protocol.Transform.position)
-}
-inline ::Protocol::Vector3D* Transform::release_position() {
+inline void Transform::_internal_set_x(float value) {
   
-  ::Protocol::Vector3D* temp = _impl_.position_;
-  _impl_.position_ = nullptr;
-#ifdef PROTOBUF_FORCE_COPY_IN_RELEASE
-  auto* old =  reinterpret_cast<::PROTOBUF_NAMESPACE_ID::MessageLite*>(temp);
-  temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  if (GetArenaForAllocation() == nullptr) { delete old; }
-#else  // PROTOBUF_FORCE_COPY_IN_RELEASE
-  if (GetArenaForAllocation() != nullptr) {
-    temp = ::PROTOBUF_NAMESPACE_ID::internal::DuplicateIfNonNull(temp);
-  }
-#endif  // !PROTOBUF_FORCE_COPY_IN_RELEASE
-  return temp;
+  _impl_.x_ = value;
 }
-inline ::Protocol::Vector3D* Transform::unsafe_arena_release_position() {
-  // @@protoc_insertion_point(field_release:Protocol.Transform.position)
-  
-  ::Protocol::Vector3D* temp = _impl_.position_;
-  _impl_.position_ = nullptr;
-  return temp;
-}
-inline ::Protocol::Vector3D* Transform::_internal_mutable_position() {
-  
-  if (_impl_.position_ == nullptr) {
-    auto* p = CreateMaybeMessage<::Protocol::Vector3D>(GetArenaForAllocation());
-    _impl_.position_ = p;
-  }
-  return _impl_.position_;
-}
-inline ::Protocol::Vector3D* Transform::mutable_position() {
-  ::Protocol::Vector3D* _msg = _internal_mutable_position();
-  // @@protoc_insertion_point(field_mutable:Protocol.Transform.position)
-  return _msg;
-}
-inline void Transform::set_allocated_position(::Protocol::Vector3D* position) {
-  ::PROTOBUF_NAMESPACE_ID::Arena* message_arena = GetArenaForAllocation();
-  if (message_arena == nullptr) {
-    delete _impl_.position_;
-  }
-  if (position) {
-    ::PROTOBUF_NAMESPACE_ID::Arena* submessage_arena =
-        ::PROTOBUF_NAMESPACE_ID::Arena::InternalGetOwningArena(position);
-    if (message_arena != submessage_arena) {
-      position = ::PROTOBUF_NAMESPACE_ID::internal::GetOwnedMessage(
-          message_arena, position, submessage_arena);
-    }
-    
-  } else {
-    
-  }
-  _impl_.position_ = position;
-  // @@protoc_insertion_point(field_set_allocated:Protocol.Transform.position)
+inline void Transform::set_x(float value) {
+  _internal_set_x(value);
+  // @@protoc_insertion_point(field_set:Protocol.Transform.x)
 }
 
-// float yaw = 2;
+// float y = 2;
+inline void Transform::clear_y() {
+  _impl_.y_ = 0;
+}
+inline float Transform::_internal_y() const {
+  return _impl_.y_;
+}
+inline float Transform::y() const {
+  // @@protoc_insertion_point(field_get:Protocol.Transform.y)
+  return _internal_y();
+}
+inline void Transform::_internal_set_y(float value) {
+  
+  _impl_.y_ = value;
+}
+inline void Transform::set_y(float value) {
+  _internal_set_y(value);
+  // @@protoc_insertion_point(field_set:Protocol.Transform.y)
+}
+
+// float z = 3;
+inline void Transform::clear_z() {
+  _impl_.z_ = 0;
+}
+inline float Transform::_internal_z() const {
+  return _impl_.z_;
+}
+inline float Transform::z() const {
+  // @@protoc_insertion_point(field_get:Protocol.Transform.z)
+  return _internal_z();
+}
+inline void Transform::_internal_set_z(float value) {
+  
+  _impl_.z_ = value;
+}
+inline void Transform::set_z(float value) {
+  _internal_set_z(value);
+  // @@protoc_insertion_point(field_set:Protocol.Transform.z)
+}
+
+// float yaw = 4;
 inline void Transform::clear_yaw() {
   _impl_.yaw_ = 0;
 }
@@ -967,121 +644,9 @@ inline void Transform::set_yaw(float value) {
   // @@protoc_insertion_point(field_set:Protocol.Transform.yaw)
 }
 
-// -------------------------------------------------------------------
-
-// Vector2D
-
-// float x = 1;
-inline void Vector2D::clear_x() {
-  _impl_.x_ = 0;
-}
-inline float Vector2D::_internal_x() const {
-  return _impl_.x_;
-}
-inline float Vector2D::x() const {
-  // @@protoc_insertion_point(field_get:Protocol.Vector2D.x)
-  return _internal_x();
-}
-inline void Vector2D::_internal_set_x(float value) {
-  
-  _impl_.x_ = value;
-}
-inline void Vector2D::set_x(float value) {
-  _internal_set_x(value);
-  // @@protoc_insertion_point(field_set:Protocol.Vector2D.x)
-}
-
-// float y = 2;
-inline void Vector2D::clear_y() {
-  _impl_.y_ = 0;
-}
-inline float Vector2D::_internal_y() const {
-  return _impl_.y_;
-}
-inline float Vector2D::y() const {
-  // @@protoc_insertion_point(field_get:Protocol.Vector2D.y)
-  return _internal_y();
-}
-inline void Vector2D::_internal_set_y(float value) {
-  
-  _impl_.y_ = value;
-}
-inline void Vector2D::set_y(float value) {
-  _internal_set_y(value);
-  // @@protoc_insertion_point(field_set:Protocol.Vector2D.y)
-}
-
-// -------------------------------------------------------------------
-
-// Vector3D
-
-// float x = 1;
-inline void Vector3D::clear_x() {
-  _impl_.x_ = 0;
-}
-inline float Vector3D::_internal_x() const {
-  return _impl_.x_;
-}
-inline float Vector3D::x() const {
-  // @@protoc_insertion_point(field_get:Protocol.Vector3D.x)
-  return _internal_x();
-}
-inline void Vector3D::_internal_set_x(float value) {
-  
-  _impl_.x_ = value;
-}
-inline void Vector3D::set_x(float value) {
-  _internal_set_x(value);
-  // @@protoc_insertion_point(field_set:Protocol.Vector3D.x)
-}
-
-// float y = 2;
-inline void Vector3D::clear_y() {
-  _impl_.y_ = 0;
-}
-inline float Vector3D::_internal_y() const {
-  return _impl_.y_;
-}
-inline float Vector3D::y() const {
-  // @@protoc_insertion_point(field_get:Protocol.Vector3D.y)
-  return _internal_y();
-}
-inline void Vector3D::_internal_set_y(float value) {
-  
-  _impl_.y_ = value;
-}
-inline void Vector3D::set_y(float value) {
-  _internal_set_y(value);
-  // @@protoc_insertion_point(field_set:Protocol.Vector3D.y)
-}
-
-// float z = 3;
-inline void Vector3D::clear_z() {
-  _impl_.z_ = 0;
-}
-inline float Vector3D::_internal_z() const {
-  return _impl_.z_;
-}
-inline float Vector3D::z() const {
-  // @@protoc_insertion_point(field_get:Protocol.Vector3D.z)
-  return _internal_z();
-}
-inline void Vector3D::_internal_set_z(float value) {
-  
-  _impl_.z_ = value;
-}
-inline void Vector3D::set_z(float value) {
-  _internal_set_z(value);
-  // @@protoc_insertion_point(field_set:Protocol.Vector3D.z)
-}
-
 #ifdef __GNUC__
   #pragma GCC diagnostic pop
 #endif  // __GNUC__
-// -------------------------------------------------------------------
-
-// -------------------------------------------------------------------
-
 // -------------------------------------------------------------------
 
 
