@@ -26,12 +26,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void HandleMove(FVector2D Input);
 
+	UFUNCTION(BlueprintCallable)
+	void HandleJump();
+
 private:
 	void SendMovePacket();
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	FVector SimulatedPlayerTargetPosition;
+	FVector TargetPosition;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	FVector ControlledPlayerVelocity;
@@ -44,7 +47,7 @@ public:
 	float MoveSpeed = 450.f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float RotationSpeed = 720.f;
+	float RotationSpeed = 480.f;
 
 public:
 	bool ShouldSendMovePkt = false;
@@ -52,7 +55,8 @@ public:
 	float TargetMovePktTime = 0.15f;
 
 	FVector2D PrevInput;
-	FHitResult PrevHitResult;
+	FHitResult PrevMoveHitResult;
+	FHitResult PrevJumpHitResult;
 	FRotator TargetRotation;
 	
 private:

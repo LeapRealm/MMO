@@ -139,7 +139,7 @@ void UClientGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 	const Protocol::Vector3D& Position = MovePkt.transform().position();
 	if (APlayerPawn* TargetPawn = Cast<APlayerPawn>(Players[ObjectID]))
 	{
-		TargetPawn->SimulatedPlayerTargetPosition = FVector(Position.x(), Position.y(), Position.z());
+		TargetPawn->TargetPosition = FVector(Position.x(), Position.y(), Position.z());
 		TargetPawn->TargetRotation = FRotator(0.f, MovePkt.transform().yaw(), 0.f);
 	}
 }

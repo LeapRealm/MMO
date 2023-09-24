@@ -39,7 +39,7 @@ void APlayerPawn::BeginPlay()
 
 	ClientGameInstance = Cast<UClientGameInstance>(GetGameInstance());
 
-	SimulatedPlayerTargetPosition = GetActorLocation();
+	TargetPosition = GetActorLocation();
 	TargetRotation = GetActorRotation();
 }
 
@@ -50,15 +50,21 @@ void APlayerPawn::Tick(float DeltaTime)
 	if (bPlayerControlled)
 	{
 		FHitResult HitResult;
-		AddActorWorldOffset(ControlledPlayerVelocity * DeltaTime, true, &HitResult);
-
-		if (HitResult.bBlockingHit)
-			ControlledPlayerVelocity = FVector::ZeroVector;
-		
-		if (PrevHitResult.bBlockingHit == false && HitResult.bBlockingHit)
+		SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), FVector(FVector2D(TargetPosition), GetActorLocation().Z), DeltaTime, MoveSpeed), true, &HitResult);
+		if (PrevMoveHitResult.bBlockingHit == false && HitResult.bBlockingHit)
+		{
+			TargetPosition = FVector(FVector2D(GetActorLocation()), TargetPosition.Z);
 			ShouldSendMovePkt = true;
+		}
+		PrevMoveHitResult = HitResult;
 		
-		PrevHitResult = HitResult;
+		SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), FVector(FVector2D(GetActorLocation()), TargetPosition.Z), DeltaTime, MoveSpeed), true, &HitResult);
+		if (PrevJumpHitResult.bBlockingHit == false && HitResult.bBlockingHit)
+		{
+			TargetPosition = FVector(FVector2D(TargetPosition), GetActorLocation().Z);
+			ShouldSendMovePkt = true;
+		}
+		PrevJumpHitResult = HitResult;
 		
 		if (MovePktTime >= TargetMovePktTime || ShouldSendMovePkt)
 			SendMovePacket();
@@ -66,9 +72,9 @@ void APlayerPawn::Tick(float DeltaTime)
 	}
 	else
 	{
-		SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), SimulatedPlayerTargetPosition, DeltaTime, MoveSpeed));
+		SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), TargetPosition, DeltaTime, MoveSpeed));
 	}
-	
+
 	SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), TargetRotation, DeltaTime, RotationSpeed));
 }
 
@@ -89,13 +95,19 @@ void APlayerPawn::HandleMove(FVector2D Input)
 	if (Input != FVector2D::ZeroVector)
 		TargetRotation = FRotator(0.f, UKismetMathLibrary::Conv_VectorToRotator(Direction).Yaw, 0.f);
 
-	ControlledPlayerVelocity = Direction * MoveSpeed;
+	TargetPosition = GetActorLocation() + Direction * MoveSpeed * 2.f;
 	
 	if (PrevInput != Input)
 	{
 		PrevInput = Input;
 		ShouldSendMovePkt = true;
 	}
+}
+
+void APlayerPawn::HandleJump()
+{
+	TargetPosition.Z = GetActorLocation().Z + 400.f;
+	ShouldSendMovePkt = true;
 }
 
 void APlayerPawn::SendMovePacket()
@@ -107,9 +119,8 @@ void APlayerPawn::SendMovePacket()
 	Protocol::Vector3D* Position = MovePkt.mutable_transform()->mutable_position();
 	MovePkt.mutable_transform()->set_yaw(TargetRotation.Yaw);
 	
-	FVector TargetPos = GetActorLocation() + (ControlledPlayerVelocity * 0.5f);
-	Position->set_x(TargetPos.X);
-	Position->set_y(TargetPos.Y);
-	Position->set_z(TargetPos.Z);
+	Position->set_x(TargetPosition.X);
+	Position->set_y(TargetPosition.Y);
+	Position->set_z(TargetPosition.Z);
 	SEND_PACKET(MovePkt);
 }
