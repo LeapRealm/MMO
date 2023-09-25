@@ -29,9 +29,7 @@ bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 bool Handle_S_LEAVE_GAME(PacketSessionRef& session, Protocol::S_LEAVE_GAME& pkt)
 {
 	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
-	{
-		// TODO: 게임 종료 or 로비로 이동
-	}
+		ClientGameInstance->Disconnect();
 	return true;
 }
 

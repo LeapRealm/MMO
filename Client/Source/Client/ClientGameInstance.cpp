@@ -7,7 +7,26 @@
 #include "SocketSubsystem.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 
-void UClientGameInstance::ConnectToGameServer()
+void UClientGameInstance::Init()
+{
+	Super::Init();
+
+	RequestConnect();
+}
+
+void UClientGameInstance::Tick(float DeltaTime)
+{
+	HandleRecvPackets();
+}
+
+void UClientGameInstance::Shutdown()
+{
+	Super::Shutdown();
+
+	RequestDisconnect();
+}
+
+void UClientGameInstance::RequestConnect()
 {
 	Socket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(TEXT("Stream"), TEXT("Client Socket"));
 
@@ -38,7 +57,15 @@ void UClientGameInstance::ConnectToGameServer()
 	}
 }
 
-void UClientGameInstance::DisconnectFromGameServer()
+void UClientGameInstance::HandleRecvPackets()
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	GameServerSession->HandleRecvPackets();
+}
+
+void UClientGameInstance::RequestDisconnect()
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -47,12 +74,20 @@ void UClientGameInstance::DisconnectFromGameServer()
 	SEND_PACKET(LeavePkt);
 }
 
-void UClientGameInstance::HandleRecvPackets()
+void UClientGameInstance::Disconnect()
 {
-	if (Socket == nullptr || GameServerSession == nullptr)
-		return;
-
-	GameServerSession->HandleRecvPackets();
+	if (GameServerSession)
+	{
+		GameServerSession->Disconnect();
+		GameServerSession = nullptr;
+	}
+	
+	if (Socket)
+	{
+		ISocketSubsystem* SocketSubsystem = ISocketSubsystem::Get();
+		SocketSubsystem->DestroySocket(Socket);
+		Socket = nullptr;
+	}
 }
 
 void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
@@ -76,8 +111,8 @@ void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo)
 	if (Players.Find(ObjectID) != nullptr)
 		return;
 
-	const Protocol::Vector3D& Position = PlayerInfo.transform().position();
-	FVector SpawnLocation(Position.x(), Position.y(), Position.z());
+	const Protocol::Transform& Transform = PlayerInfo.transform();
+	FVector SpawnLocation(Transform.x(), Transform.y(), Transform.z());
 	AActor* SpawnedActor = World->SpawnActor(PlayerClass, &SpawnLocation);
 	
 	Players.Add(PlayerInfo.objectid(), SpawnedActor);

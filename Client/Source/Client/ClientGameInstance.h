@@ -10,19 +10,20 @@ class PacketSession;
 class FSocket;
 
 UCLASS()
-class CLIENT_API UClientGameInstance : public UGameInstance
+class CLIENT_API UClientGameInstance : public UGameInstance, public FTickableGameObject
 {
 	GENERATED_BODY()
+
+public:
+	virtual void Init() override;
+	virtual void Tick(float DeltaTime) override;
+	virtual void Shutdown() override;
 	
 public:
-	UFUNCTION(BlueprintCallable)
-	void ConnectToGameServer();
-
-	UFUNCTION(BlueprintCallable)
-	void DisconnectFromGameServer();
-
-	UFUNCTION(BlueprintCallable)
+	void RequestConnect();
 	void HandleRecvPackets();
+	void RequestDisconnect();
+	void Disconnect();
 
 	void SendPacket(SendBufferRef SendBuffer);
 
@@ -33,6 +34,12 @@ public:
 
 	void HandleDespawn(uint64 ObjectID);
 	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);
+
+public:
+	FORCEINLINE virtual TStatId GetStatId() const override { return Super::GetStatID(); }
+	FORCEINLINE virtual UWorld* GetTickableGameObjectWorld() const override { return GetWorld(); }
+	FORCEINLINE virtual ETickableTickType GetTickableTickType() const override { return IsTemplate() ? ETickableTickType::Never : FTickableGameObject::GetTickableTickType(); }
+	FORCEINLINE virtual bool IsAllowedToTick() const override { return IsTemplate() == false; }
 	
 public:
 	FSocket* Socket;

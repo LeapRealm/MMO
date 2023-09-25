@@ -21,13 +21,14 @@ void PacketSession::Run()
 
 void PacketSession::HandleRecvPackets()
 {
-	while (true)
+	PacketSessionRef ThisPtr = AsShared();
+	
+	while (RecvWorkerThread)
 	{
 		TArray<uint8> Packet;
 		if (RecvPacketQueue.Dequeue(OUT Packet) == false)
 			break;
-
-		PacketSessionRef ThisPtr = AsShared();
+		
 		ClientPacketHandler::HandlePacket(ThisPtr, Packet.GetData(), Packet.Num());
 	}
 }
