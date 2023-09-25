@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "ClientGameInstance.generated.h"
 
+class AClientMyPlayer;
+class AClientPlayer;
 class PacketSession;
 class FSocket;
 
@@ -28,12 +30,14 @@ public:
 	void SendPacket(SendBufferRef SendBuffer);
 
 public:
-	void HandleSpawn(const Protocol::PlayerInfo& PlayerInfo);
+	void HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, bool IsMyPlayer);
 	void HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt);
 	void HandleSpawn(const Protocol::S_SPAWN& SpawnPkt);
 
 	void HandleDespawn(uint64 ObjectID);
 	void HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt);
+
+	void HandleMove(const Protocol::S_MOVE& MovePkt);
 
 public:
 	FORCEINLINE virtual TStatId GetStatId() const override { return Super::GetStatID(); }
@@ -49,8 +53,11 @@ public:
 
 public:
 	UPROPERTY(EditAnywhere)
-	TSubclassOf<APawn> PlayerClass;
+	TSubclassOf<AClientPlayer> OtherPlayerClass;
 
-	UPROPERTY(VisibleAnywhere)
-	TMap<uint64, TObjectPtr<AActor>> Players;
+	UPROPERTY()
+	TObjectPtr<AClientMyPlayer> MyPlayer;
+	
+	UPROPERTY()
+	TMap<uint64, TObjectPtr<AClientPlayer>> Players;
 };

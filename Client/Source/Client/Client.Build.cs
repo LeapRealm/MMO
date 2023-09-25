@@ -27,6 +27,7 @@ public class Client : ModuleRules
 		PrivateIncludePaths.AddRange(new string[]
 		{
 			"Client/",
+			"Client/Game/",
 			"Client/Network/",
 			"Client/Network/Protocol/",
 		});

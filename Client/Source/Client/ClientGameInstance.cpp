@@ -5,7 +5,9 @@
 #include "PacketSession.h"
 #include "Sockets.h"
 #include "SocketSubsystem.h"
+#include "ClientMyPlayer.h"
 #include "Interfaces/IPv4/IPv4Address.h"
+#include "Kismet/GameplayStatics.h"
 
 void UClientGameInstance::Init()
 {
@@ -38,9 +40,8 @@ void UClientGameInstance::RequestConnect()
 	InternetAddr->SetPort(Port);
 
 	LOG_SCREEN(TEXT("Connecting To Server..."));
-
-	bool bConnected = Socket->Connect(*InternetAddr);
-	if (bConnected)
+	
+	if (Socket->Connect(*InternetAddr))
 	{
 		LOG_SCREEN(TEXT("Connection Success"));
 		
@@ -98,7 +99,7 @@ void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
 	GameServerSession->SendPacket(SendBuffer);
 }
 
-void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo)
+void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, bool IsMyPlayer)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -108,25 +109,41 @@ void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo)
 		return;
 
 	const uint64 ObjectID = PlayerInfo.objectid();
-	if (Players.Find(ObjectID) != nullptr)
+	if (Players.Contains(ObjectID))
 		return;
-
-	const Protocol::Transform& Transform = PlayerInfo.transform();
-	FVector SpawnLocation(Transform.x(), Transform.y(), Transform.z());
-	AActor* SpawnedActor = World->SpawnActor(PlayerClass, &SpawnLocation);
 	
-	Players.Add(PlayerInfo.objectid(), SpawnedActor);
+	if (IsMyPlayer)
+	{
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+		if (AClientMyPlayer* Player = Cast<AClientMyPlayer>(PlayerController->GetPawn()))
+		{
+			MyPlayer = Player;
+			Player->Init(true, PlayerInfo);
+			Players.Add(PlayerInfo.objectid(), Player);
+		}
+	}
+	else
+	{
+		FActorSpawnParameters SpawnParameters;
+		SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		
+		if (AClientPlayer* Player = Cast<AClientPlayer>(World->SpawnActor(OtherPlayerClass, nullptr, SpawnParameters)))
+		{
+			Player->Init(false, PlayerInfo);
+			Players.Add(PlayerInfo.objectid(), Player);
+		}
+	}
 }
 
 void UClientGameInstance::HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt)
 {
-	HandleSpawn(EnterGamePkt.player());
+	HandleSpawn(EnterGamePkt.player(), true);
 }
 
 void UClientGameInstance::HandleSpawn(const Protocol::S_SPAWN& SpawnPkt)
 {
 	for (const auto& Player : SpawnPkt.players())
-		HandleSpawn(Player);
+		HandleSpawn(Player, false);
 }
 
 void UClientGameInstance::HandleDespawn(uint64 ObjectID)
@@ -138,15 +155,32 @@ void UClientGameInstance::HandleDespawn(uint64 ObjectID)
 	if (World == nullptr)
 		return;
 
-	TObjectPtr<AActor>* FindActor = Players.Find(ObjectID);
-	if (FindActor == nullptr)
+	TObjectPtr<AClientPlayer>* FindPlayer = Players.Find(ObjectID);
+	if (FindPlayer == nullptr)
 		return;
 
-	World->DestroyActor(*FindActor);
+	World->DestroyActor(*FindPlayer);
 }
 
 void UClientGameInstance::HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt)
 {
 	for (uint64 ObjectID : DespawnPkt.objectids())
 		HandleDespawn(ObjectID);
+}
+
+void UClientGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	const uint64 ObjectID = MovePkt.info().objectid();
+	TObjectPtr<AClientPlayer>* FindPlayer = Players.Find(ObjectID);
+	if (FindPlayer == nullptr)
+		return;
+
+	AClientPlayer* Player =	(*FindPlayer);
+	if (Player->IsMyPlayer())
+		return;
+	
+	Player->SetDesiredPlayerInfo(MovePkt.info());
 }
