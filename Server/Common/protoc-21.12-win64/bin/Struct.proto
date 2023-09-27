@@ -7,7 +7,6 @@ message PlayerInfo
 {
 	uint64 objectID = 1;
 	Transform transform = 2;
-	MoveState moveState = 3;
 }
 
 message Transform

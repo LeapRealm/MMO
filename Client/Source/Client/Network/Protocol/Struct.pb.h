@@ -184,7 +184,6 @@ class PlayerInfo final :
   enum : int {
     kTransformFieldNumber = 2,
     kObjectIDFieldNumber = 1,
-    kMoveStateFieldNumber = 3,
   };
   // .Protocol.Transform transform = 2;
   bool has_transform() const;
@@ -213,15 +212,6 @@ class PlayerInfo final :
   void _internal_set_objectid(uint64_t value);
   public:
 
-  // .Protocol.MoveState moveState = 3;
-  void clear_movestate();
-  ::Protocol::MoveState movestate() const;
-  void set_movestate(::Protocol::MoveState value);
-  private:
-  ::Protocol::MoveState _internal_movestate() const;
-  void _internal_set_movestate(::Protocol::MoveState value);
-  public:
-
   // @@protoc_insertion_point(class_scope:Protocol.PlayerInfo)
  private:
   class _Internal;
@@ -232,7 +222,6 @@ class PlayerInfo final :
   struct Impl_ {
     ::Protocol::Transform* transform_;
     uint64_t objectid_;
-    int movestate_;
     mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   };
   union { Impl_ _impl_; };
@@ -538,26 +527,6 @@ inline void PlayerInfo::set_allocated_transform(::Protocol::Transform* transform
   }
   _impl_.transform_ = transform;
   // @@protoc_insertion_point(field_set_allocated:Protocol.PlayerInfo.transform)
-}
-
-// .Protocol.MoveState moveState = 3;
-inline void PlayerInfo::clear_movestate() {
-  _impl_.movestate_ = 0;
-}
-inline ::Protocol::MoveState PlayerInfo::_internal_movestate() const {
-  return static_cast< ::Protocol::MoveState >(_impl_.movestate_);
-}
-inline ::Protocol::MoveState PlayerInfo::movestate() const {
-  // @@protoc_insertion_point(field_get:Protocol.PlayerInfo.moveState)
-  return _internal_movestate();
-}
-inline void PlayerInfo::_internal_set_movestate(::Protocol::MoveState value) {
-  
-  _impl_.movestate_ = value;
-}
-inline void PlayerInfo::set_movestate(::Protocol::MoveState value) {
-  _internal_set_movestate(value);
-  // @@protoc_insertion_point(field_set:Protocol.PlayerInfo.moveState)
 }
 
 // -------------------------------------------------------------------

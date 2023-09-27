@@ -1,33 +1,17 @@
 #include "Game/ClientPlayer.h"
 
 #include "Components/CapsuleComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 
 AClientPlayer::AClientPlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
-
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
-	GetCharacterMovement()->JumpZVelocity = 700.f;
-	GetCharacterMovement()->AirControl = 1.f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
-
-	GetCharacterMovement()->bOrientRotationToMovement = false;
-	GetCharacterMovement()->bRunPhysicsWithNoController = true;
-
-	CurrentPlayerInfo = new Protocol::PlayerInfo();
-	DesiredPlayerInfo = new Protocol::PlayerInfo();
-
-	MoveThresholdSquared = MoveThreshold * MoveThreshold;
 }
 
 AClientPlayer::~AClientPlayer()
@@ -57,16 +41,20 @@ void AClientPlayer::Tick(float DeltaTime)
 	if (IsMyPlayer() == false)
 	{
 		// TODO: 너무 많이 차이나면 순간이동
-		FVector CurrentLocation = GetActorLocation();
 		const Protocol::Transform& DesiredTransform = DesiredPlayerInfo->transform();
-		const FVector DesiredLocation = FVector(DesiredTransform.x(), DesiredTransform.y(), DesiredTransform.z());
-		
-		if (FVector::DistSquaredXY(CurrentLocation, DesiredLocation) > MoveThresholdSquared)
-		{
-			FVector Direction = (DesiredLocation - CurrentLocation).GetSafeNormal();
-			AddMovementInput(Direction);
-		}
+		FVector DesiredLocation = FVector(DesiredTransform.x(), DesiredTransform.y(), DesiredTransform.z());
 
+		if (FVector::Distance(GetActorLocation(), DesiredLocation) < 50.f)
+		{
+			SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), DesiredLocation, DeltaTime, 300.f));
+		}
+		else
+		{
+			SetActorLocation(FMath::VInterpTo(GetActorLocation(), DesiredLocation, DeltaTime, 6.f));
+		}
+		// SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), FVector(FVector2D(DesiredLocation), GetActorLocation().Z), DeltaTime, 350.f));
+		// if (DesiredLocation.Z > GetActorLocation().Z)
+		// 	SetActorLocation(FMath::VInterpTo(GetActorLocation(), FVector(FVector2D(GetActorLocation()), (DesiredLocation.Z)), DeltaTime, 700.f));
 		SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), FRotator(0, DesiredTransform.yaw(), 0), DeltaTime, 360.f));
 	}
 
@@ -80,7 +68,7 @@ void AClientPlayer::UpdateCurrentPlayerInfo()
 	Transform->set_x(Location.X);
 	Transform->set_y(Location.Y);
 	Transform->set_z(Location.Z);
-
+	
 	if (bIsMyPlayer)
 		Transform->set_yaw(GetControlRotation().Yaw);
 	else
@@ -119,12 +107,4 @@ void AClientPlayer::SetDesiredPlayerInfo(const Protocol::PlayerInfo& Info)
 		assert(PlayerInfo->object_id() == Info.object_id());
 
 	DesiredPlayerInfo->CopyFrom(Info);
-}
-
-void AClientPlayer::SetMoveState(Protocol::MoveState State)
-{
-	if (CurrentPlayerInfo->movestate() == State)
-		return;
-
-	CurrentPlayerInfo->set_movestate(State);
 }

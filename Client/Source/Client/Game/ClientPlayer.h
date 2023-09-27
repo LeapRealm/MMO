@@ -32,16 +32,13 @@ public:
 
 	Protocol::PlayerInfo* GetDesiredPlayerInfo() { return DesiredPlayerInfo; }
 	void SetDesiredPlayerInfo(const Protocol::PlayerInfo& Info);
-
-	Protocol::MoveState GetMoveState() { return CurrentPlayerInfo->movestate(); }
-	void SetMoveState(Protocol::MoveState State);
 	
 protected:
 	bool bIsMyPlayer = false;
-	Protocol::PlayerInfo* CurrentPlayerInfo;
-	Protocol::PlayerInfo* DesiredPlayerInfo;
+	Protocol::PlayerInfo* CurrentPlayerInfo = new Protocol::PlayerInfo();
+	Protocol::PlayerInfo* DesiredPlayerInfo = new Protocol::PlayerInfo();
 
 private:
 	const float MoveThreshold = 20.f;
-	float MoveThresholdSquared;
+	float MoveThresholdSquared = MoveThreshold * MoveThreshold;
 };

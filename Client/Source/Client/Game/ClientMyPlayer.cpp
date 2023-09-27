@@ -13,16 +13,21 @@ AClientMyPlayer::AClientMyPlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
+	GetMesh()->SetOwnerNoSee(true);
+	
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraComponent->SetupAttachment(GetRootComponent(), USpringArmComponent::SocketName);
 	CameraComponent->SetRelativeLocation(FVector(0.f, 0.f, 73.f));
 	CameraComponent->bUsePawnControlRotation = true;
 	
 	bUseControllerRotationYaw = true;
-	GetMesh()->SetOwnerNoSee(true);
 	
+	GetCharacterMovement()->JumpZVelocity = 700.f;
 	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->bRunPhysicsWithNoController = false;
+	GetCharacterMovement()->MaxWalkSpeed = 500.f;
+	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
+	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 void AClientMyPlayer::BeginPlay()
@@ -58,12 +63,23 @@ void AClientMyPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	TickSendMovePacket();
+	UpdateDesiredPlayerInfo();
+	TickSendMovePacket(DeltaTime);
 }
 
-void AClientMyPlayer::TickSendMovePacket()
+void AClientMyPlayer::UpdateDesiredPlayerInfo()
 {
-	MovePacketSendTimer -= GetWorld()->DeltaTimeSeconds;
+	DesiredPlayerInfo->CopyFrom(*CurrentPlayerInfo);
+	
+	Protocol::Transform* DesiredTransform = DesiredPlayerInfo->mutable_transform();
+	FVector2D DesiredPosition = FVector2D(GetActorLocation() + FVector(LastDirection * 100.f, 0.f));
+	DesiredTransform->set_x(DesiredPosition.X);
+	DesiredTransform->set_y(DesiredPosition.Y);
+}
+
+void AClientMyPlayer::TickSendMovePacket(float DeltaTime)
+{
+	MovePacketSendTimer -= DeltaTime;
 
 	if (bForceSendPacket || MovePacketSendTimer <= 0)
 	{
@@ -72,7 +88,8 @@ void AClientMyPlayer::TickSendMovePacket()
 
 		Protocol::C_MOVE MovePkt;
 		Protocol::PlayerInfo* Info = MovePkt.mutable_info();
-		Info->CopyFrom(*CurrentPlayerInfo);
+		Info->CopyFrom(*DesiredPlayerInfo);
+		
 		SEND_PACKET(MovePkt);
 	}
 }
@@ -94,6 +111,8 @@ void AClientMyPlayer::Move(const FInputActionValue& Value)
 		
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+		LastDirection = FVector2D((ForwardDirection + RightDirection).GetSafeNormal2D());
 		
 		AddMovementInput(ForwardDirection, MoveInput.Y);
 		AddMovementInput(RightDirection, MoveInput.X);

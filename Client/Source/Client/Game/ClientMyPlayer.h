@@ -24,7 +24,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	void TickSendMovePacket();
+	void UpdateDesiredPlayerInfo();
+	void TickSendMovePacket(float DeltaTime);
 	
 protected:
 	void Move(const FInputActionValue& Value);
@@ -47,9 +48,10 @@ protected:
 	TObjectPtr<UInputAction> JumpAction;
 
 protected:
-	const float MOVE_PACKET_SEND_DELAY = 0.2f;
+	const float MOVE_PACKET_SEND_DELAY = 0.1f;
 	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 	
 	bool bForceSendPacket = false;
 	FVector2D LastMoveInput = FVector2D::ZeroVector;
+	FVector2D LastDirection = FVector2D::ZeroVector;
 };
