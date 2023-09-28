@@ -6,7 +6,7 @@ AClientPlayer::AClientPlayer()
 {
 	PrimaryActorTick.bCanEverTick = true;
 	
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(42.f, 88.0f);
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.f, 0.f, -88.f), FRotator(0.f, -90.f, 0.f));
 
 	bUseControllerRotationPitch = false;
@@ -40,22 +40,31 @@ void AClientPlayer::Tick(float DeltaTime)
 	
 	if (IsMyPlayer() == false)
 	{
-		// TODO: 너무 많이 차이나면 순간이동
 		const Protocol::Transform& DesiredTransform = DesiredPlayerInfo->transform();
 		FVector DesiredLocation = FVector(DesiredTransform.x(), DesiredTransform.y(), DesiredTransform.z());
+		float Dist2DSquared = FVector::DistSquared2D(GetActorLocation(), DesiredLocation);
+		float DistZ = FMath::Abs(GetActorLocation().Z - DesiredLocation.Z);
 
-		if (FVector::Distance(GetActorLocation(), DesiredLocation) < 50.f)
-		{
-			SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), DesiredLocation, DeltaTime, 300.f));
-		}
+		FVector2D NewLocation2D;
+		if (Dist2DSquared < MoveThresholdSquared * 2.f)
+			NewLocation2D = FMath::Vector2DInterpTo(FVector2D(GetActorLocation()), FVector2D(DesiredLocation), DeltaTime, 4.5f);
+		else if (Dist2DSquared < MoveThresholdSquared * 8.f)
+			NewLocation2D = FMath::Vector2DInterpConstantTo(FVector2D(GetActorLocation()), FVector2D(DesiredLocation), DeltaTime, 800.f);
 		else
-		{
-			SetActorLocation(FMath::VInterpTo(GetActorLocation(), DesiredLocation, DeltaTime, 6.f));
-		}
-		// SetActorLocation(FMath::VInterpConstantTo(GetActorLocation(), FVector(FVector2D(DesiredLocation), GetActorLocation().Z), DeltaTime, 350.f));
-		// if (DesiredLocation.Z > GetActorLocation().Z)
-		// 	SetActorLocation(FMath::VInterpTo(GetActorLocation(), FVector(FVector2D(GetActorLocation()), (DesiredLocation.Z)), DeltaTime, 700.f));
-		SetActorRotation(FMath::RInterpConstantTo(GetActorRotation(), FRotator(0, DesiredTransform.yaw(), 0), DeltaTime, 360.f));
+			NewLocation2D = FVector2D(DesiredLocation);
+
+		float NewLocationZ;
+		if (DistZ < MoveThreshold)
+			NewLocationZ = FMath::FInterpConstantTo(GetActorLocation().Z, DesiredLocation.Z, DeltaTime, 180.f);
+		else if (DistZ < MoveThreshold * 2.f)
+			NewLocationZ = FMath::FInterpTo(GetActorLocation().Z, DesiredLocation.Z, DeltaTime, 4.5f);
+		else if (DistZ < MoveThreshold * 8.f)
+			NewLocationZ = FMath::FInterpConstantTo(GetActorLocation().Z, DesiredLocation.Z, DeltaTime, 800.f);
+		else
+			NewLocationZ = DesiredLocation.Z;
+		
+		SetActorLocation(FVector(NewLocation2D, NewLocationZ));
+		SetActorRotation(FMath::RInterpTo(GetActorRotation(), FRotator(0, DesiredTransform.yaw(), 0), DeltaTime, 6.5f));
 	}
 
 	UpdateCurrentPlayerInfo();

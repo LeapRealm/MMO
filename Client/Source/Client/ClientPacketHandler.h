@@ -5,7 +5,12 @@
 #include "Client.h"
 #endif
 
+#if UE_BUILD_DEBUG + UE_BUILD_DEVELOPMENT + UE_BUILD_TEST + UE_BUILD_SHIPPING >= 1
+using PacketHandlerFunc = TFunction<bool(PacketSessionRef&, BYTE*, int32)>;
+#else
 using PacketHandlerFunc = std::function<bool(PacketSessionRef&, BYTE*, int32)>;
+#endif
+
 extern PacketHandlerFunc GPacketHandler[UINT16_MAX];
 
 enum : uint16

@@ -24,8 +24,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	void UpdateDesiredPlayerInfo();
 	void TickSendMovePacket(float DeltaTime);
+	void UpdateDesiredPlayerInfo();
 	
 protected:
 	void Move(const FInputActionValue& Value);
@@ -53,5 +53,4 @@ protected:
 	
 	bool bForceSendPacket = false;
 	FVector2D LastMoveInput = FVector2D::ZeroVector;
-	FVector2D LastDirection = FVector2D::ZeroVector;
 };

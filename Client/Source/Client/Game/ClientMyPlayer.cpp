@@ -6,6 +6,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 
@@ -22,11 +23,6 @@ AClientMyPlayer::AClientMyPlayer()
 	
 	bUseControllerRotationYaw = true;
 	
-	GetCharacterMovement()->JumpZVelocity = 700.f;
-	GetCharacterMovement()->AirControl = 0.35f;
-	GetCharacterMovement()->MaxWalkSpeed = 500.f;
-	GetCharacterMovement()->MinAnalogWalkSpeed = 20.f;
-	GetCharacterMovement()->BrakingDecelerationWalking = 2000.f;
 	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
@@ -63,18 +59,7 @@ void AClientMyPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	UpdateDesiredPlayerInfo();
 	TickSendMovePacket(DeltaTime);
-}
-
-void AClientMyPlayer::UpdateDesiredPlayerInfo()
-{
-	DesiredPlayerInfo->CopyFrom(*CurrentPlayerInfo);
-	
-	Protocol::Transform* DesiredTransform = DesiredPlayerInfo->mutable_transform();
-	FVector2D DesiredPosition = FVector2D(GetActorLocation() + FVector(LastDirection * 100.f, 0.f));
-	DesiredTransform->set_x(DesiredPosition.X);
-	DesiredTransform->set_y(DesiredPosition.Y);
 }
 
 void AClientMyPlayer::TickSendMovePacket(float DeltaTime)
@@ -86,12 +71,35 @@ void AClientMyPlayer::TickSendMovePacket(float DeltaTime)
 		bForceSendPacket = false;
 		MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
 
+		UpdateDesiredPlayerInfo();
+		
 		Protocol::C_MOVE MovePkt;
 		Protocol::PlayerInfo* Info = MovePkt.mutable_info();
 		Info->CopyFrom(*DesiredPlayerInfo);
 		
 		SEND_PACKET(MovePkt);
 	}
+}
+
+void AClientMyPlayer::UpdateDesiredPlayerInfo()
+{
+	DesiredPlayerInfo->CopyFrom(*CurrentPlayerInfo);
+	
+	FVector NewDesiredLocation = GetActorLocation() + FVector(0.f, 0.f, GetMovementComponent()->Velocity.Z / 3.f);
+
+	FHitResult HitResult;
+	FCollisionQueryParams QueryParams;
+	QueryParams.AddIgnoredActor(this);
+	GetWorld()->SweepSingleByChannel(HitResult, GetActorLocation(), NewDesiredLocation, GetCapsuleComponent()->GetComponentRotation().Quaternion(),
+		ECC_Pawn, FCollisionShape::MakeCapsule(GetCapsuleComponent()->GetScaledCapsuleRadius(), GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), QueryParams);
+
+	if (HitResult.bBlockingHit)
+		NewDesiredLocation = HitResult.Location;
+	
+	Protocol::Transform* DesiredTransform = DesiredPlayerInfo->mutable_transform();
+	DesiredTransform->set_x(NewDesiredLocation.X);
+	DesiredTransform->set_y(NewDesiredLocation.Y);
+	DesiredTransform->set_z(NewDesiredLocation.Z);
 }
 
 void AClientMyPlayer::Move(const FInputActionValue& Value)
@@ -111,8 +119,6 @@ void AClientMyPlayer::Move(const FInputActionValue& Value)
 		
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		LastDirection = FVector2D((ForwardDirection + RightDirection).GetSafeNormal2D());
 		
 		AddMovementInput(ForwardDirection, MoveInput.Y);
 		AddMovementInput(RightDirection, MoveInput.X);

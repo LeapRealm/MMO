@@ -39,6 +39,6 @@ protected:
 	Protocol::PlayerInfo* DesiredPlayerInfo = new Protocol::PlayerInfo();
 
 private:
-	const float MoveThreshold = 20.f;
+	const float MoveThreshold = 100.f;
 	float MoveThresholdSquared = MoveThreshold * MoveThreshold;
 };
