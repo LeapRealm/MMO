@@ -1,6 +1,8 @@
 #include "Game/ClientPlayer.h"
 
+#include "Client.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AClientPlayer::AClientPlayer()
 {
@@ -12,6 +14,10 @@ AClientPlayer::AClientPlayer()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
+
+	GetCharacterMovement()->MaxWalkSpeed = 400.f;
+	GetCharacterMovement()->bOrientRotationToMovement = false;
+	GetCharacterMovement()->bRunPhysicsWithNoController = false;
 }
 
 AClientPlayer::~AClientPlayer()
@@ -41,29 +47,16 @@ void AClientPlayer::Tick(float DeltaTime)
 	if (IsMyPlayer() == false)
 	{
 		const Protocol::Transform& DesiredTransform = DesiredPlayerInfo->transform();
+		FVector CurrentLocation = GetActorLocation();
 		FVector DesiredLocation = FVector(DesiredTransform.x(), DesiredTransform.y(), DesiredTransform.z());
-		float Dist2DSquared = FVector::DistSquared2D(GetActorLocation(), DesiredLocation);
-		float DistZ = FMath::Abs(GetActorLocation().Z - DesiredLocation.Z);
 
-		FVector2D NewLocation2D;
-		if (Dist2DSquared < MoveThresholdSquared * 2.f)
-			NewLocation2D = FMath::Vector2DInterpTo(FVector2D(GetActorLocation()), FVector2D(DesiredLocation), DeltaTime, 4.5f);
-		else if (Dist2DSquared < MoveThresholdSquared * 8.f)
-			NewLocation2D = FMath::Vector2DInterpConstantTo(FVector2D(GetActorLocation()), FVector2D(DesiredLocation), DeltaTime, 800.f);
-		else
-			NewLocation2D = FVector2D(DesiredLocation);
-
-		float NewLocationZ;
-		if (DistZ < MoveThreshold)
-			NewLocationZ = FMath::FInterpConstantTo(GetActorLocation().Z, DesiredLocation.Z, DeltaTime, 180.f);
-		else if (DistZ < MoveThreshold * 2.f)
-			NewLocationZ = FMath::FInterpTo(GetActorLocation().Z, DesiredLocation.Z, DeltaTime, 4.5f);
-		else if (DistZ < MoveThreshold * 8.f)
-			NewLocationZ = FMath::FInterpConstantTo(GetActorLocation().Z, DesiredLocation.Z, DeltaTime, 800.f);
-		else
-			NewLocationZ = DesiredLocation.Z;
+		float Speed = 7.5f;
+		float Distance = FVector::Distance(CurrentLocation, DesiredLocation);
+		float DistanceZ = FMath::Abs(CurrentLocation.Z - DesiredLocation.Z);
+		if (DistanceZ > 3.f || Distance < 20.f)
+			Speed *= 2.f;
 		
-		SetActorLocation(FVector(NewLocation2D, NewLocationZ));
+		SetActorLocation(FMath::VInterpTo(CurrentLocation, DesiredLocation, DeltaTime, Speed));
 		SetActorRotation(FMath::RInterpTo(GetActorRotation(), FRotator(0, DesiredTransform.yaw(), 0), DeltaTime, 6.5f));
 	}
 

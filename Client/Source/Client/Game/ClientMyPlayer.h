@@ -48,8 +48,8 @@ protected:
 	TObjectPtr<UInputAction> JumpAction;
 
 protected:
-	const float MOVE_PACKET_SEND_DELAY = 0.1f;
-	float MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+	float MovePacketSendDelay = 0.1f;
+	float MovePacketSendTimer = MovePacketSendDelay;
 	
 	bool bForceSendPacket = false;
 	FVector2D LastMoveInput = FVector2D::ZeroVector;

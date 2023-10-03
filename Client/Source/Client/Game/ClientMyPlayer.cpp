@@ -22,8 +22,6 @@ AClientMyPlayer::AClientMyPlayer()
 	CameraComponent->bUsePawnControlRotation = true;
 	
 	bUseControllerRotationYaw = true;
-	
-	GetCharacterMovement()->bOrientRotationToMovement = false;
 }
 
 void AClientMyPlayer::BeginPlay()
@@ -64,12 +62,17 @@ void AClientMyPlayer::Tick(float DeltaTime)
 
 void AClientMyPlayer::TickSendMovePacket(float DeltaTime)
 {
+	if (GetCharacterMovement()->Velocity.Z)
+		MovePacketSendDelay = 0.05f;
+	else
+		MovePacketSendDelay = 0.1f;
+	
 	MovePacketSendTimer -= DeltaTime;
 
 	if (bForceSendPacket || MovePacketSendTimer <= 0)
 	{
 		bForceSendPacket = false;
-		MovePacketSendTimer = MOVE_PACKET_SEND_DELAY;
+		MovePacketSendTimer = MovePacketSendDelay;
 
 		UpdateDesiredPlayerInfo();
 		
@@ -84,15 +87,15 @@ void AClientMyPlayer::TickSendMovePacket(float DeltaTime)
 void AClientMyPlayer::UpdateDesiredPlayerInfo()
 {
 	DesiredPlayerInfo->CopyFrom(*CurrentPlayerInfo);
-	
-	FVector NewDesiredLocation = GetActorLocation() + FVector(0.f, 0.f, GetMovementComponent()->Velocity.Z / 3.f);
 
+	FVector NewDesiredLocation = GetActorLocation();
+	
 	FHitResult HitResult;
 	FCollisionQueryParams QueryParams;
 	QueryParams.AddIgnoredActor(this);
 	GetWorld()->SweepSingleByChannel(HitResult, GetActorLocation(), NewDesiredLocation, GetCapsuleComponent()->GetComponentRotation().Quaternion(),
 		ECC_Pawn, FCollisionShape::MakeCapsule(GetCapsuleComponent()->GetScaledCapsuleRadius(), GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), QueryParams);
-
+	
 	if (HitResult.bBlockingHit)
 		NewDesiredLocation = HitResult.Location;
 	
