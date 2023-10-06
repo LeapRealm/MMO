@@ -4,6 +4,7 @@
 #include "Service.h"
 #include "GameSession.h"
 #include "GameSessionManager.h"
+#include "Room.h"
 
 enum
 {
@@ -41,16 +42,6 @@ int main()
 		{
 			DoWorkerJob(service);
 		});
-	}
-
-	while (false)
-	{
-		Protocol::S_CHAT pkt;
-		pkt.set_msg("Hello, Client, I'm Server");
-		SendBufferRef SendBuffer = ServerPacketHandler::MakeSendBuffer(pkt);
-
-		GSessionManager.Broadcast(SendBuffer);
-		this_thread::sleep_for(1s);
 	}
 
 	DoWorkerJob(service);

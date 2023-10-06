@@ -16,10 +16,8 @@ Room::~Room()
 
 }
 
-bool Room::HandleEnterPlayerLocked(PlayerRef player)
+bool Room::HandleEnterPlayer(PlayerRef player)
 {
-	WRITE_LOCK;
-
 	bool success = EnterPlayer(player);
 
 	Protocol::Transform* transform = player->playerInfo->mutable_transform();
@@ -65,12 +63,10 @@ bool Room::HandleEnterPlayerLocked(PlayerRef player)
 	return success;
 }
 
-bool Room::HandleLeavePlayerLocked(PlayerRef player)
+bool Room::HandleLeavePlayer(PlayerRef player)
 {
 	if (player == nullptr)
 		return false;
-
-	WRITE_LOCK;
 
 	const uint64 objectID = player->playerInfo->objectid();
 	if (LeavePlayer(objectID) == false)
@@ -97,10 +93,8 @@ bool Room::HandleLeavePlayerLocked(PlayerRef player)
 	return true;
 }
 
-void Room::HandleMoveLocked(const Protocol::C_MOVE& pkt)
+void Room::HandleMove(Protocol::C_MOVE pkt)
 {
-	WRITE_LOCK;
-
 	const uint64 objectID = pkt.info().objectid();
 	if (_players.contains(objectID) == false)
 		return;
@@ -116,13 +110,18 @@ void Room::HandleMoveLocked(const Protocol::C_MOVE& pkt)
 	Broadcast(sendBuffer);
 }
 
+RoomRef Room::GetRoomRef()
+{
+	return static_pointer_cast<Room>(shared_from_this());
+}
+
 bool Room::EnterPlayer(PlayerRef player)
 {
 	if (_players.contains(player->playerInfo->objectid()))
 		return false;
 
 	_players.emplace(player->playerInfo->objectid(), player);
-	player->room.store(shared_from_this());
+	player->room.store(GetRoomRef());
 
 	return true;
 }

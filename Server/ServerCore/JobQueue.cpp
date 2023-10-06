@@ -30,7 +30,7 @@ void JobQueue::Execute()
 		vector<JobRef> jobs;
 		_jobs.PopAll(OUT jobs);
 
-		const int32 jobCount = static_cast<int32>(jobs.size());
+		const int32 jobCount = jobs.size();
 		for (int32 i = 0; i < jobCount; i++)
 			jobs[i]->Execute();
 

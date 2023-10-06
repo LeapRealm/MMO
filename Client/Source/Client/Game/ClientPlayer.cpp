@@ -50,13 +50,20 @@ void AClientPlayer::Tick(float DeltaTime)
 		FVector CurrentLocation = GetActorLocation();
 		FVector DesiredLocation = FVector(DesiredTransform.x(), DesiredTransform.y(), DesiredTransform.z());
 
-		float Speed = 7.5f;
 		float Distance = FVector::Distance(CurrentLocation, DesiredLocation);
 		float DistanceZ = FMath::Abs(CurrentLocation.Z - DesiredLocation.Z);
-		if (DistanceZ > 3.f || Distance < 20.f)
-			Speed *= 2.f;
+		if (Distance > 200.f)
+		{
+			SetActorLocation(DesiredLocation);
+		}
+		else
+		{
+			float Speed = 7.5f;
+			if (DistanceZ > 3.f || Distance < 20.f)
+				Speed *= 2.f;
 		
-		SetActorLocation(FMath::VInterpTo(CurrentLocation, DesiredLocation, DeltaTime, Speed));
+			SetActorLocation(FMath::VInterpTo(CurrentLocation, DesiredLocation, DeltaTime, Speed));
+		}
 		SetActorRotation(FMath::RInterpTo(GetActorRotation(), FRotator(0, DesiredTransform.yaw(), 0), DeltaTime, 6.5f));
 	}
 
