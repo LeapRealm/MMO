@@ -1,10 +1,9 @@
 syntax = "proto3";
 package Protocol;
 
-enum MoveState
+enum MonsterState
 {
-	MOVE_STATE_IDLE = 0;
-	MOVE_STATE_WALK = 1;
-	MOVE_STATE_SPRINT = 2;
-	MOVE_STATE_JUMP = 3;
+	MONSTER_STATE_PATROL = 0;
+	MONSTER_STATE_CHASE = 1;
+	MONSTER_STATE_ATTACK = 2;
 }

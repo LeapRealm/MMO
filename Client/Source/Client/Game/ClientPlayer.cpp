@@ -114,6 +114,6 @@ void AClientPlayer::SetDesiredPlayerInfo(const Protocol::PlayerInfo& Info)
 {
 	if (CurrentPlayerInfo->objectid())
 		assert(PlayerInfo->object_id() == Info.object_id());
-
+	
 	DesiredPlayerInfo->CopyFrom(Info);
 }

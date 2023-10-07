@@ -2,13 +2,15 @@
 #include "Room.h"
 
 #include "GameSession.h"
+#include "Monster.h"
+#include "ObjectUtils.h"
 #include "Player.h"
 
 RoomRef GRoom = make_shared<Room>();
 
 Room::Room()
 {
-
+	
 }
 
 Room::~Room()
@@ -55,6 +57,12 @@ bool Room::HandleEnterPlayer(PlayerRef player)
 			playerInfo->CopyFrom(*pair.second->playerInfo);
 		}
 
+		for (const auto& pair : _monsters)
+		{
+			Protocol::MonsterInfo* monsterInfo = spawnPkt.add_monsters();
+			monsterInfo->CopyFrom(*pair.second->_monsterInfo);
+		}
+
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(spawnPkt);
 		if (SessionRef session = player->session.lock())
 			session->Send(sendBuffer);
@@ -93,7 +101,7 @@ bool Room::HandleLeavePlayer(PlayerRef player)
 	return true;
 }
 
-void Room::HandleMove(Protocol::C_MOVE pkt)
+void Room::HandleMovePlayer(Protocol::C_MOVE_PLAYER pkt)
 {
 	const uint64 objectID = pkt.info().objectid();
 	if (_players.contains(objectID) == false)
@@ -102,12 +110,38 @@ void Room::HandleMove(Protocol::C_MOVE pkt)
 	PlayerRef& player = _players[objectID];
 	player->playerInfo->CopyFrom(pkt.info());
 
-	Protocol::S_MOVE movePkt;
+	Protocol::S_MOVE_PLAYER movePkt;
 	Protocol::PlayerInfo* info = movePkt.mutable_info();
 	info->CopyFrom(pkt.info());
 
 	SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(movePkt);
 	Broadcast(sendBuffer);
+}
+
+void Room::Init()
+{
+	MonsterRef monster = ObjectUtils::CreateMonster();
+	Protocol::Transform* transform = monster->_monsterInfo->mutable_transform();
+	transform->set_x(Utils::GetRandom(0.f, 1000.f));
+	transform->set_y(Utils::GetRandom(0.f, 1000.f));
+	transform->set_z(100.f);
+	transform->set_yaw(Utils::GetRandom(0.f, 100.f));
+
+	monster->_room = static_pointer_cast<Room>(shared_from_this());
+	_monsters[monster->_monsterInfo->objectid()] = monster;
+}
+
+void Room::Update()
+{
+	for (auto& monsterPair : _monsters)
+	{
+		monsterPair.second->Update();
+	}
+
+	GRoom->DoTimer(100, [this]()
+	{
+		Update();
+	});
 }
 
 RoomRef Room::GetRoomRef()

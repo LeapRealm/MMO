@@ -63,9 +63,9 @@ void AClientMyPlayer::Tick(float DeltaTime)
 void AClientMyPlayer::TickSendMovePacket(float DeltaTime)
 {
 	if (GetCharacterMovement()->Velocity.Z)
-		MovePacketSendDelay = 0.05f;
+		MovePacketSendDelay = 0.04f;
 	else
-		MovePacketSendDelay = 0.1f;
+		MovePacketSendDelay = 0.08f;
 	
 	MovePacketSendTimer -= DeltaTime;
 
@@ -76,7 +76,7 @@ void AClientMyPlayer::TickSendMovePacket(float DeltaTime)
 
 		UpdateDesiredPlayerInfo();
 		
-		Protocol::C_MOVE MovePkt;
+		Protocol::C_MOVE_PLAYER MovePkt;
 		Protocol::PlayerInfo* Info = MovePkt.mutable_info();
 		Info->CopyFrom(*DesiredPlayerInfo);
 		

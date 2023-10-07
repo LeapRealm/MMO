@@ -39,6 +39,7 @@ message S_LEAVE_GAME
 message S_SPAWN
 {
 	repeated PlayerInfo players = 1;
+	repeated MonsterInfo monsters = 2;
 }
 
 message S_DESPAWN
@@ -46,14 +47,25 @@ message S_DESPAWN
 	repeated uint64 objectIDs = 1;
 }
 
-message C_MOVE
+message C_MOVE_PLAYER
 {
 	PlayerInfo info = 1;
 }
 
-message S_MOVE
+message S_MOVE_PLAYER
 {
 	PlayerInfo info = 1;
+}
+
+message S_MOVE_MONSTER
+{
+	MonsterInfo info = 1;
+}
+
+message S_ATTACK
+{
+	uint64 FromObjectID = 1;
+	uint64 ToObjectID = 2;
 }
 
 // FOR TEST

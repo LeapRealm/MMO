@@ -61,7 +61,7 @@ bool Handle_C_LEAVE_GAME(PacketSessionRef& session, Protocol::C_LEAVE_GAME& pkt)
 	return true;
 }
 
-bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
+bool Handle_C_MOVE_PLAYER(PacketSessionRef& session, Protocol::C_MOVE_PLAYER& pkt)
 {
 	GameSessionRef gameSession = static_pointer_cast<GameSession>(session);
 
@@ -73,7 +73,7 @@ bool Handle_C_MOVE(PacketSessionRef& session, Protocol::C_MOVE& pkt)
 	if (room == nullptr)
 		return false;
 
-	room->DoAsync(&Room::HandleMove, pkt);
+	room->DoAsync(&Room::HandleMovePlayer, pkt);
 
 	return true;
 }

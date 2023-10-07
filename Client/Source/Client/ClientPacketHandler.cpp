@@ -22,7 +22,7 @@ bool Handle_S_LOGIN(PacketSessionRef& session, Protocol::S_LOGIN& pkt)
 bool Handle_S_ENTER_GAME(PacketSessionRef& session, Protocol::S_ENTER_GAME& pkt)
 {
 	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
-		ClientGameInstance->HandleSpawn(pkt);
+		ClientGameInstance->HandleSpawnPlayer(pkt);
 	return true;
 }
 
@@ -47,10 +47,24 @@ bool Handle_S_DESPAWN(PacketSessionRef& session, Protocol::S_DESPAWN& pkt)
 	return true;
 }
 
-bool Handle_S_MOVE(PacketSessionRef& session, Protocol::S_MOVE& pkt)
+bool Handle_S_MOVE_PLAYER(PacketSessionRef& session, Protocol::S_MOVE_PLAYER& pkt)
 {
 	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
-		ClientGameInstance->HandleMove(pkt);
+		ClientGameInstance->HandleMovePlayer(pkt);
+	return true;
+}
+
+bool Handle_S_MOVE_MONSTER(PacketSessionRef& session, Protocol::S_MOVE_MONSTER& pkt)
+{
+	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		ClientGameInstance->HandleMoveMonster(pkt);
+	return true;
+}
+
+bool Handle_S_ATTACK(PacketSessionRef& session, Protocol::S_ATTACK& pkt)
+{
+	if (UClientGameInstance* ClientGameInstance = Cast<UClientGameInstance>(GWorld->GetGameInstance()))
+		ClientGameInstance->HandleAttack(pkt);
 	return true;
 }
 

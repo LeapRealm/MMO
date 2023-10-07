@@ -9,6 +9,12 @@ message PlayerInfo
 	Transform transform = 2;
 }
 
+message MonsterInfo
+{
+	uint64 objectID = 1;
+	Transform transform = 2;
+}
+
 message Transform
 {
 	float x = 1;

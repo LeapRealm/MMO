@@ -6,6 +6,7 @@
 #include "Sockets.h"
 #include "SocketSubsystem.h"
 #include "ClientMyPlayer.h"
+#include "MonsterBase.h"
 #include "Interfaces/IPv4/IPv4Address.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -99,7 +100,21 @@ void UClientGameInstance::SendPacket(SendBufferRef SendBuffer)
 	GameServerSession->SendPacket(SendBuffer);
 }
 
-void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, bool IsMyPlayer)
+void UClientGameInstance::HandleSpawn(const Protocol::S_SPAWN& SpawnPkt)
+{
+	for (const auto& Player : SpawnPkt.players())
+		HandleSpawnPlayer(Player, false);
+
+	for (const auto& Monster : SpawnPkt.monsters())
+		HandleSpawnMonster(Monster);
+}
+
+void UClientGameInstance::HandleSpawnPlayer(const Protocol::S_ENTER_GAME& EnterGamePkt)
+{
+	HandleSpawnPlayer(EnterGamePkt.player(), true);
+}
+
+void UClientGameInstance::HandleSpawnPlayer(const Protocol::PlayerInfo& PlayerInfo, bool IsMyPlayer)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -135,15 +150,29 @@ void UClientGameInstance::HandleSpawn(const Protocol::PlayerInfo& PlayerInfo, bo
 	}
 }
 
-void UClientGameInstance::HandleSpawn(const Protocol::S_ENTER_GAME& EnterGamePkt)
+void UClientGameInstance::HandleSpawnMonster(const Protocol::MonsterInfo& MonsterInfo)
 {
-	HandleSpawn(EnterGamePkt.player(), true);
-}
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
 
-void UClientGameInstance::HandleSpawn(const Protocol::S_SPAWN& SpawnPkt)
-{
-	for (const auto& Player : SpawnPkt.players())
-		HandleSpawn(Player, false);
+	UWorld* World = GetWorld();
+	if (World == nullptr)
+		return;
+
+	const uint64 ObjectID = MonsterInfo.objectid();
+	if (Monsters.Contains(ObjectID))
+		return;
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	FVector SpawnLocation = FVector(MonsterInfo.transform().x(), MonsterInfo.transform().y(), MonsterInfo.transform().z());
+	FRotator SpawnRotation = FRotator(0.f, MonsterInfo.transform().yaw(), 0.f);
+	if (AMonsterBase* Monster = Cast<AMonsterBase>(World->SpawnActor(MonsterClass, &SpawnLocation, &SpawnRotation, SpawnParameters)))
+	{
+		Monster->Init(MonsterInfo);
+		Monsters.Add(MonsterInfo.objectid(), Monster);
+	}
 }
 
 void UClientGameInstance::HandleDespawn(uint64 ObjectID)
@@ -168,7 +197,7 @@ void UClientGameInstance::HandleDespawn(const Protocol::S_DESPAWN& DespawnPkt)
 		HandleDespawn(ObjectID);
 }
 
-void UClientGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
+void UClientGameInstance::HandleMovePlayer(const Protocol::S_MOVE_PLAYER& MovePkt)
 {
 	if (Socket == nullptr || GameServerSession == nullptr)
 		return;
@@ -183,4 +212,32 @@ void UClientGameInstance::HandleMove(const Protocol::S_MOVE& MovePkt)
 		return;
 	
 	Player->SetDesiredPlayerInfo(MovePkt.info());
+}
+
+void UClientGameInstance::HandleMoveMonster(const Protocol::S_MOVE_MONSTER& MovePkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	const uint64 ObjectID = MovePkt.info().objectid();
+	TObjectPtr<AMonsterBase>* FindMonster = Monsters.Find(ObjectID);
+	if (FindMonster == nullptr)
+		return;
+
+	AMonsterBase* Monster =	(*FindMonster);
+	Monster->SetDesiredMonsterInfo(MovePkt.info());
+}
+
+void UClientGameInstance::HandleAttack(const Protocol::S_ATTACK& AttackPkt)
+{
+	if (Socket == nullptr || GameServerSession == nullptr)
+		return;
+
+	const uint64 ObjectID = AttackPkt.fromobjectid();
+	TObjectPtr<AMonsterBase>* FindMonster = Monsters.Find(ObjectID);
+	if (FindMonster == nullptr)
+		return;
+
+	AMonsterBase* Monster =	(*FindMonster);
+	Monster->Attack();
 }

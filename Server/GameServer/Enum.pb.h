@@ -47,32 +47,31 @@ PROTOBUF_NAMESPACE_OPEN
 PROTOBUF_NAMESPACE_CLOSE
 namespace Protocol {
 
-enum MoveState : int {
-  MOVE_STATE_IDLE = 0,
-  MOVE_STATE_WALK = 1,
-  MOVE_STATE_SPRINT = 2,
-  MOVE_STATE_JUMP = 3,
-  MoveState_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
-  MoveState_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
+enum MonsterState : int {
+  MONSTER_STATE_PATROL = 0,
+  MONSTER_STATE_CHASE = 1,
+  MONSTER_STATE_ATTACK = 2,
+  MonsterState_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::min(),
+  MonsterState_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<int32_t>::max()
 };
-bool MoveState_IsValid(int value);
-constexpr MoveState MoveState_MIN = MOVE_STATE_IDLE;
-constexpr MoveState MoveState_MAX = MOVE_STATE_JUMP;
-constexpr int MoveState_ARRAYSIZE = MoveState_MAX + 1;
+bool MonsterState_IsValid(int value);
+constexpr MonsterState MonsterState_MIN = MONSTER_STATE_PATROL;
+constexpr MonsterState MonsterState_MAX = MONSTER_STATE_ATTACK;
+constexpr int MonsterState_ARRAYSIZE = MonsterState_MAX + 1;
 
-const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MoveState_descriptor();
+const ::PROTOBUF_NAMESPACE_ID::EnumDescriptor* MonsterState_descriptor();
 template<typename T>
-inline const std::string& MoveState_Name(T enum_t_value) {
-  static_assert(::std::is_same<T, MoveState>::value ||
+inline const std::string& MonsterState_Name(T enum_t_value) {
+  static_assert(::std::is_same<T, MonsterState>::value ||
     ::std::is_integral<T>::value,
-    "Incorrect type passed to function MoveState_Name.");
+    "Incorrect type passed to function MonsterState_Name.");
   return ::PROTOBUF_NAMESPACE_ID::internal::NameOfEnum(
-    MoveState_descriptor(), enum_t_value);
+    MonsterState_descriptor(), enum_t_value);
 }
-inline bool MoveState_Parse(
-    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, MoveState* value) {
-  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<MoveState>(
-    MoveState_descriptor(), name, value);
+inline bool MonsterState_Parse(
+    ::PROTOBUF_NAMESPACE_ID::ConstStringParam name, MonsterState* value) {
+  return ::PROTOBUF_NAMESPACE_ID::internal::ParseNamedEnum<MonsterState>(
+    MonsterState_descriptor(), name, value);
 }
 // ===================================================================
 
@@ -96,10 +95,10 @@ inline bool MoveState_Parse(
 
 PROTOBUF_NAMESPACE_OPEN
 
-template <> struct is_proto_enum< ::Protocol::MoveState> : ::std::true_type {};
+template <> struct is_proto_enum< ::Protocol::MonsterState> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::MoveState>() {
-  return ::Protocol::MoveState_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::Protocol::MonsterState>() {
+  return ::Protocol::MonsterState_descriptor();
 }
 
 PROTOBUF_NAMESPACE_CLOSE

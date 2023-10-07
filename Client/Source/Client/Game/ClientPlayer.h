@@ -26,15 +26,22 @@ public:
 
 public:
 	bool IsMyPlayer() { return bIsMyPlayer; }
-	
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FVector GetCurrentLocation() { return FVector(CurrentPlayerInfo->transform().x(), CurrentPlayerInfo->transform().y(), CurrentPlayerInfo->transform().z()); };
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FVector GetDesiredLocation() { return FVector(DesiredPlayerInfo->transform().x(), DesiredPlayerInfo->transform().y(), DesiredPlayerInfo->transform().z()); };
+
 	Protocol::PlayerInfo* GetCurrentPlayerInfo() { return CurrentPlayerInfo; }
 	void SetCurrentPlayerInfo(const Protocol::PlayerInfo& Info);
-
+	
 	Protocol::PlayerInfo* GetDesiredPlayerInfo() { return DesiredPlayerInfo; }
 	void SetDesiredPlayerInfo(const Protocol::PlayerInfo& Info);
 	
 protected:
 	bool bIsMyPlayer = false;
+	
 	Protocol::PlayerInfo* CurrentPlayerInfo = new Protocol::PlayerInfo();
 	Protocol::PlayerInfo* DesiredPlayerInfo = new Protocol::PlayerInfo();
 

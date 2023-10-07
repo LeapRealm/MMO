@@ -3,7 +3,6 @@
 #include "ThreadManager.h"
 #include "Service.h"
 #include "GameSession.h"
-#include "GameSessionManager.h"
 #include "Room.h"
 
 enum
@@ -43,6 +42,13 @@ int main()
 			DoWorkerJob(service);
 		});
 	}
+
+	GRoom->Init();
+
+	GRoom->DoTimer(100, []()
+	{
+		GRoom->Update();
+	});
 
 	DoWorkerJob(service);
 
