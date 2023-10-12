@@ -33,6 +33,8 @@ int main()
 		100
 	);
 
+	cout << "Server Listening..." << endl;
+
 	ASSERT_CRASH(service->Start());
 
 	for (int32 i = 0; i < 5; i++)

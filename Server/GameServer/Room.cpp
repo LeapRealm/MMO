@@ -122,8 +122,8 @@ void Room::Init()
 {
 	MonsterRef monster = ObjectUtils::CreateMonster();
 	Protocol::Transform* transform = monster->_monsterInfo->mutable_transform();
-	transform->set_x(Utils::GetRandom(0.f, 1000.f));
-	transform->set_y(Utils::GetRandom(0.f, 1000.f));
+	transform->set_x(Utils::GetRandom(1000.f, 1500.f));
+	transform->set_y(Utils::GetRandom(1000.f, 1500.f));
 	transform->set_z(100.f);
 	transform->set_yaw(Utils::GetRandom(0.f, 100.f));
 

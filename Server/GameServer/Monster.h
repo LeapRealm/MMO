@@ -16,6 +16,9 @@ public:
 	void UpdateAttack();
 
 public:
+	void SetMonsterState(Protocol::MonsterState newState);
+
+public:
 	Protocol::MonsterState _monsterState;
 	Protocol::MonsterInfo* _monsterInfo;
 	atomic<weak_ptr<Room>> _room;
@@ -26,5 +29,5 @@ private:
 	float attackRange = 250.f;
 
 	float currAttackTime = 0.f;
-	float targetAttackTime = 2.f;
+	float targetAttackTime = 1.5f;
 };

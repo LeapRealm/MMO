@@ -7,7 +7,7 @@
 Monster::Monster()
 {
 	_monsterInfo = new Protocol::MonsterInfo();
-	_monsterState = Protocol::MONSTER_STATE_PATROL;
+	SetMonsterState(Protocol::MONSTER_STATE_PATROL);
 }
 
 Monster::~Monster()
@@ -58,8 +58,7 @@ void Monster::UpdatePatrol()
 	if (targetPlayer)
 	{
 		_targetPlayer = targetPlayer;
-		_monsterState = Protocol::MONSTER_STATE_CHASE;
-		cout << "CHASE" << "\n";
+		SetMonsterState(Protocol::MONSTER_STATE_CHASE);
 	}
 }
 
@@ -77,15 +76,9 @@ void Monster::UpdateChase()
 
 	float dist = sqrt(pow(monsterTransform.x() - playerTransform.x(), 2) + pow(monsterTransform.y() - playerTransform.y(), 2));
 	if (dist <= attackRange)
-	{
-		_monsterState = Protocol::MONSTER_STATE_ATTACK;
-		cout << "ATTACK" << "\n";
-	}
+		SetMonsterState(Protocol::MONSTER_STATE_ATTACK);
 	else if (dist > chaseRange)
-	{
-		_monsterState = Protocol::MONSTER_STATE_PATROL;
-		cout << "PATROL" << "\n";
-	}
+		SetMonsterState(Protocol::MONSTER_STATE_PATROL);
 
 	Protocol::Transform* transform = _monsterInfo->mutable_transform();
 	transform->set_x(monsterTransform.x() + ((playerTransform.x() - monsterTransform.x()) / dist * 300.f * 0.1f));
@@ -96,8 +89,7 @@ void Monster::UpdateAttack()
 {
 	if (_targetPlayer.expired())
 	{
-		_monsterState = Protocol::MONSTER_STATE_PATROL;
-		cout << "PATROL" << "\n";
+		SetMonsterState(Protocol::MONSTER_STATE_PATROL);
 		return;
 	}
 
@@ -108,8 +100,9 @@ void Monster::UpdateAttack()
 	float dist = sqrt(pow(monsterTransform.x() - playerTransform.x(), 2) + pow(monsterTransform.y() - playerTransform.y(), 2));
 	if (dist > attackRange)
 	{
-		_monsterState = Protocol::MONSTER_STATE_CHASE;
-		cout << "CHASE" << "\n";
+		if (currAttackTime >= targetAttackTime)
+			SetMonsterState(Protocol::MONSTER_STATE_CHASE);
+		return;
 	}
 
 	if (currAttackTime >= targetAttackTime)
@@ -122,5 +115,23 @@ void Monster::UpdateAttack()
 
 		SendBufferRef sendBuffer = ServerPacketHandler::MakeSendBuffer(attackPkt);
 		GRoom->Broadcast(sendBuffer);
+	}
+}
+
+void Monster::SetMonsterState(Protocol::MonsterState newState)
+{
+	_monsterState = newState;
+
+	switch (newState)
+	{
+	case Protocol::MONSTER_STATE_PATROL:
+		cout << "Monster State : [PATROL]" << endl;
+		break;
+	case Protocol::MONSTER_STATE_CHASE:
+		cout << "Monster State : [CHASE]" << endl;
+		break;
+	case Protocol::MONSTER_STATE_ATTACK:
+		cout << "Monster State : [ATTACK]" << endl;
+		break;
 	}
 }

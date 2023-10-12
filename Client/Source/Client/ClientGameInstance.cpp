@@ -27,6 +27,7 @@ void UClientGameInstance::Shutdown()
 	Super::Shutdown();
 
 	RequestDisconnect();
+	Disconnect();
 }
 
 void UClientGameInstance::RequestConnect()

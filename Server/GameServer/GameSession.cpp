@@ -6,11 +6,13 @@
 
 void GameSession::OnConnected()
 {
+	cout << "Player Connected" << endl;
 	GSessionManager.Add(static_pointer_cast<GameSession>(shared_from_this()));
 }
 
 void GameSession::OnDisconnected()
 {
+	cout << "Player Disconnected" << endl;
 	GSessionManager.Remove(static_pointer_cast<GameSession>(shared_from_this()));
 }
 
